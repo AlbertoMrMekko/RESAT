@@ -20,7 +20,7 @@ public class ResatApplication extends Application
     {
         this.root = new BorderPane();
 
-        VBox sidebar = sideBarLayout(primaryStage);
+        VBox sidebar = sideBarLayout();
         this.root.setLeft(sidebar);
 
         Scene scene = new Scene(this.root, 1125, 750);
@@ -29,7 +29,7 @@ public class ResatApplication extends Application
         primaryStage.show();
     }
 
-    private VBox sideBarLayout(Stage stage)
+    private VBox sideBarLayout()
     {
         VBox sidebar = new VBox();
         sidebar.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
@@ -79,6 +79,7 @@ public class ResatApplication extends Application
 
         row.setOnMouseClicked(event -> {
             this.selectedEmployee = employee;
+            clearDynamicContent();
             showEmployeeActions();
         });
 
