@@ -4,7 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -12,19 +11,19 @@ import java.util.List;
 
 public class ResatApplication extends Application
 {
+    private BorderPane root;
+
+    private Employee selectedEmployee;
+
     @Override
     public void start(Stage primaryStage)
     {
+        this.root = new BorderPane();
+
         VBox sidebar = sideBarLayout(primaryStage);
-        VBox employeeActions = employeeActionsLayout();
-        StackPane deleteEmployee = deleteEmployeeLayout();
+        this.root.setLeft(sidebar);
 
-        BorderPane root = new BorderPane();
-        root.setLeft(sidebar);
-        root.setCenter(employeeActions);
-        root.setRight(deleteEmployee);
-
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(this.root, 1125, 750);
         primaryStage.setTitle("RESAT");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -38,7 +37,7 @@ public class ResatApplication extends Application
         List<Employee> employees = getAllEmployees();
         for (Employee employee : employees)
         {
-            HBox row = createSidebarRow(employee.getName(), employee.isOnline());
+            HBox row = createSidebarRow(employee);
             VBox.setVgrow(row, Priority.ALWAYS);
             sidebar.getChildren().add(row);
         }
@@ -47,7 +46,7 @@ public class ResatApplication extends Application
         VBox.setVgrow(newEmployeeButtonRow, Priority.ALWAYS);
         sidebar.getChildren().add(newEmployeeButtonRow);
 
-        sidebar.setPrefWidth(200);
+        sidebar.setPrefWidth(225);
 
         return sidebar;
     }
@@ -61,7 +60,7 @@ public class ResatApplication extends Application
         return List.of(employee1, employee2, employee3);
     }
 
-    private HBox createSidebarRow(String name, boolean isOnline)
+    private HBox createSidebarRow(Employee employee)
     {
         HBox row = new HBox();
         row.setPadding(new Insets(5, 10, 5, 10));
@@ -70,13 +69,18 @@ public class ResatApplication extends Application
 
         Region colorIndicator = new Region();
         colorIndicator.setPrefSize(20, 20);
-        colorIndicator.setStyle("-fx-background-color: " + (isOnline ? "green" : "red") + ";");
+        colorIndicator.setStyle("-fx-background-color: " + (employee.isOnline() ? "green" : "red") + ";");
 
-        Label nameLabel = new Label(name);
+        Label nameLabel = new Label(employee.getName());
         nameLabel.setStyle("-fx-font-size: 22px;");
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
         nameLabel.setMaxWidth(Double.MAX_VALUE);
         nameLabel.setAlignment(Pos.CENTER);
+
+        row.setOnMouseClicked(event -> {
+            this.selectedEmployee = employee;
+            showEmployeeActions();
+        });
 
         row.getChildren().addAll(colorIndicator, nameLabel);
         return row;
@@ -103,19 +107,20 @@ public class ResatApplication extends Application
         mainButtons.setPadding(new Insets(20));
         mainButtons.setAlignment(Pos.CENTER);
 
-        Button btn1 = new Button("Entrar / Salir");
-        btn1.setPrefHeight(100);
-        btn1.setMaxWidth(Double.MAX_VALUE);
+        String recordButtonText = this.selectedEmployee.isOnline() ? "Salir" : "Entrar";
+        Button recordButton = new Button(recordButtonText);
+        recordButton.setPrefHeight(100);
+        recordButton.setMaxWidth(Double.MAX_VALUE);
 
-        Button btn2 = new Button("Registro manual");
-        btn2.setPrefHeight(100);
-        btn2.setMaxWidth(Double.MAX_VALUE);
+        Button manualInputButton = new Button("Registro manual");
+        manualInputButton.setPrefHeight(100);
+        manualInputButton.setMaxWidth(Double.MAX_VALUE);
 
-        Button btn3 = new Button("Descargar registro");
-        btn3.setPrefHeight(100);
-        btn3.setMaxWidth(Double.MAX_VALUE);
+        Button downloadRecordsButton = new Button("Descargar registro");
+        downloadRecordsButton.setPrefHeight(100);
+        downloadRecordsButton.setMaxWidth(Double.MAX_VALUE);
 
-        mainButtons.getChildren().addAll(btn1, btn2, btn3);
+        mainButtons.getChildren().addAll(recordButton, manualInputButton, downloadRecordsButton);
 
         return mainButtons;
     }
@@ -155,27 +160,15 @@ public class ResatApplication extends Application
         Scene createEmployeeScene = new Scene(mainPane, 800, 600);
         stage.setScene(createEmployeeScene);
         stage.show();
+    }
 
-        /*
-        Stage createEmployeeStage = new Stage();
-        createEmployeeStage.setTitle("Nuevo empleado");
+    private void showEmployeeActions()
+    {
+        VBox employeeActions = employeeActionsLayout();
+        StackPane deleteEmployee = deleteEmployeeLayout();
 
-        VBox formLayout = new VBox(10);
-        formLayout.setPadding(new Insets(20));
-
-        Label nameLabel = new Label("Nombre: ");
-        Label statusLabel = new Label("Estado: ");
-
-        formLayout.getChildren().addAll(nameLabel, statusLabel);
-
-        Button closeButton = new Button("Cerrar");
-        closeButton.setOnAction(e -> createEmployeeStage.close());
-        formLayout.getChildren().add(closeButton);
-
-        Scene formScene = new Scene(formLayout, 300, 200);
-        createEmployeeStage.setScene(formScene);
-        createEmployeeStage.show();
-        */
+        root.setCenter(employeeActions);
+        root.setRight(deleteEmployee);
     }
 
     public static void main(String[] args) {
