@@ -42,7 +42,7 @@ public class ResatApplication extends Application
             sidebar.getChildren().add(row);
         }
 
-        HBox newEmployeeButtonRow = createNewEmployeeButtonRow(stage);
+        HBox newEmployeeButtonRow = createNewEmployeeButtonRow();
         VBox.setVgrow(newEmployeeButtonRow, Priority.ALWAYS);
         sidebar.getChildren().add(newEmployeeButtonRow);
 
@@ -86,7 +86,7 @@ public class ResatApplication extends Application
         return row;
     }
 
-    private HBox createNewEmployeeButtonRow(Stage stage)
+    private HBox createNewEmployeeButtonRow()
     {
         HBox row = new HBox();
         row.setPadding(new Insets(5, 10, 5, 10));
@@ -95,7 +95,10 @@ public class ResatApplication extends Application
 
         Button addButton = new Button("+");
         addButton.setPrefSize(50, 30);
-        addButton.setOnAction(event -> showCreateEmployeeForm(stage));
+        addButton.setOnAction(event -> {
+            clearDynamicContent();
+            showCreateEmployeeForm();
+        });
 
         row.getChildren().add(addButton);
         return row;
@@ -138,13 +141,12 @@ public class ResatApplication extends Application
         return deleteEmployeePane;
     }
 
-    private void showCreateEmployeeForm(Stage stage)
+    private void showCreateEmployeeForm()
     {
-        BorderPane mainPane = new BorderPane();
+        BorderPane formLayout = new BorderPane();
         Label title = new Label("Nuevo empleado");
-        mainPane.setTop(title);
 
-        VBox formLayout = new VBox(10);
+        VBox formFields = new VBox(10);
         formLayout.setPadding(new Insets(20));
 
         // TODO create form with this info to fill
@@ -152,14 +154,12 @@ public class ResatApplication extends Application
         Label statusLabel = new Label("DNI: ");
         Label password1Label = new Label("Contraseña: ");
         Label password2Label = new Label("Repetir contraseña: ");
+        formFields.getChildren().addAll(nameLabel, statusLabel, password1Label, password2Label);
 
-        formLayout.getChildren().addAll(nameLabel, statusLabel, password1Label, password2Label);
+        formLayout.setTop(title);
+        formLayout.setCenter(formFields);
 
-        mainPane.setCenter(formLayout);
-
-        Scene createEmployeeScene = new Scene(mainPane, 800, 600);
-        stage.setScene(createEmployeeScene);
-        stage.show();
+        this.root.setCenter(formLayout);
     }
 
     private void showEmployeeActions()
@@ -169,6 +169,15 @@ public class ResatApplication extends Application
 
         root.setCenter(employeeActions);
         root.setRight(deleteEmployee);
+    }
+
+    /**
+     * Remove all nodes associated with root except the sidebar
+     */
+    private void clearDynamicContent()
+    {
+        this.root.setCenter(null);
+        this.root.setRight(null);
     }
 
     public static void main(String[] args) {
