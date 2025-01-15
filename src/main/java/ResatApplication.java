@@ -40,6 +40,10 @@ public class ResatApplication extends Application
         for (Employee employee : employees)
         {
             HBox row = createSidebarRow(employee);
+            if (selectedEmployee != null && employee.getDni().equals(selectedEmployee.getDni()))
+            {
+                row.setStyle("-fx-border-color: green; -fx-border-width: 5px; -fx-background-color: darkgreen;");
+            }
             VBox.setVgrow(row, Priority.ALWAYS);
             sidebar.getChildren().add(row);
         }
@@ -56,9 +60,9 @@ public class ResatApplication extends Application
     private List<Employee> getAllEmployees()
     {
         // TODO mock 3 employees
-        Employee employee1 = new Employee("Employee1", false);
-        Employee employee2 = new Employee("Employee2", true);
-        Employee employee3 = new Employee("Employee3", false);
+        Employee employee1 = new Employee("24682468H", "Employee1", false);
+        Employee employee2 = new Employee("13571357L", "Employee2", true);
+        Employee employee3 = new Employee("21436587X", "Employee3", false);
         return List.of(employee1, employee2, employee3);
     }
 

@@ -11,8 +11,9 @@ public class Employee
 
     private boolean isOnline;
 
-    public Employee(String name, boolean isOnline)
+    public Employee(String dni, String name, boolean isOnline)
     {
+        this.dni = dni;
         this.name = name;
         this.isOnline = isOnline;
     }
