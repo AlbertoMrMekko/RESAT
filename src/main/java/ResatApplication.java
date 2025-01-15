@@ -22,8 +22,7 @@ public class ResatApplication extends Application
     {
         this.root = new BorderPane();
 
-        VBox sidebar = sideBarLayout();
-        this.root.setLeft(sidebar);
+        showSideBarLayout();
 
         Scene scene = new Scene(this.root, 1125, 750);
         primaryStage.setTitle("RESAT");
@@ -31,7 +30,7 @@ public class ResatApplication extends Application
         primaryStage.show();
     }
 
-    private VBox sideBarLayout()
+    private void showSideBarLayout()
     {
         VBox sidebar = new VBox();
         sidebar.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
@@ -42,7 +41,7 @@ public class ResatApplication extends Application
             HBox row = createSidebarRow(employee);
             if (selectedEmployee != null && employee.getDni().equals(selectedEmployee.getDni()))
             {
-                row.setStyle("-fx-border-color: green; -fx-border-width: 5px; -fx-background-color: darkgreen;");
+                row.setStyle("-fx-border-color: lightgray; -fx-border-width: 3px; -fx-background-color: lightgray;");
             }
             VBox.setVgrow(row, Priority.ALWAYS);
             sidebar.getChildren().add(row);
@@ -54,7 +53,7 @@ public class ResatApplication extends Application
 
         sidebar.setPrefWidth(225);
 
-        return sidebar;
+        this.root.setLeft(sidebar);
     }
 
     private List<Employee> getAllEmployees()
@@ -86,6 +85,7 @@ public class ResatApplication extends Application
         row.setOnMouseClicked(event -> {
             this.selectedEmployee = employee;
             clearDynamicContent();
+            showSideBarLayout();
             showEmployeeActions();
         });
 
@@ -102,7 +102,9 @@ public class ResatApplication extends Application
 
         Button addButton = new Button("+");
         addButton.setOnAction(event -> {
+            this.selectedEmployee = null;
             clearDynamicContent();
+            showSideBarLayout();
             showCreateEmployeeForm();
         });
         addButton.setPrefSize(50, 30);
@@ -122,6 +124,7 @@ public class ResatApplication extends Application
         recordButton.setOnAction(event -> {
             System.out.println("Mostrar ventana de autenticación");
             System.out.println("Registrar entrada/salida del empleado");
+            System.out.println("Actualizar barra lateral");
             System.out.println("Actualizar acciones empleado");
         });
         recordButton.setPrefHeight(100);
@@ -130,7 +133,11 @@ public class ResatApplication extends Application
         Button manualInputButton = new Button("Registro manual");
         manualInputButton.setOnAction(event -> {
             System.out.println("Mostrar formulario para el registro manual");
-            System.out.println("Mostrar ventana de autenticación (tras rellenar formulario)");
+            System.out.println("Tras rellenar formulario:" +
+                                      "Mostrar ventana de autenticación " +
+                                      "Registrar entrada/salida del empleado" +
+                                      "Actualizar barra lateral" +
+                                      "Actualizar acciones empleado");
         });
         manualInputButton.setPrefHeight(100);
         manualInputButton.setMaxWidth(Double.MAX_VALUE);
@@ -227,21 +234,19 @@ public class ResatApplication extends Application
         buttons.setSpacing(5);
 
         Button cancelButton = new Button("Cancelar");
-        cancelButton.setOnAction(event -> {
-            System.out.println("Volver a inicio");
-        });
         Button createEmployeeButton = new Button("Crear empleado");
+
+        HBox.setHgrow(createEmployeeButton, Priority.ALWAYS);
+        buttons.getChildren().addAll(cancelButton, createEmployeeButton);
+
+        cancelButton.setOnAction(event -> {
+            clearDynamicContent();
+        });
         createEmployeeButton.setOnAction(event -> {
             System.out.println("Mostrar ventana de confirmación");
             System.out.println("Crear nuevo empleado");
             System.out.println("Actualizar barra lateral");
         });
-
-        HBox.setHgrow(createEmployeeButton, Priority.ALWAYS);
-        buttons.getChildren().addAll(cancelButton, createEmployeeButton);
-
-        cancelButton.setOnAction(        (e)-> { clearDynamicContent(); });
-        createEmployeeButton.setOnAction((e)-> { System.out.println("Creado nuevo usuario:"); });
 
         return buttons;
     }
