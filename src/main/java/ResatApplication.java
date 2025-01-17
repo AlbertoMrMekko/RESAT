@@ -210,12 +210,23 @@ public class ResatApplication extends Application
 
         Label nameLabel = new Label("Nombre: ");
         TextField nameField = new TextField();
+        nameField.setPrefWidth(200);
+        nameField.setPromptText("Introduce tu nombre");
+
         Label dniLabel = new Label("DNI: ");
         TextField dniField = new TextField();
+        dniField.setPrefWidth(200);
+        dniField.setPromptText("Introduce tu DNI");
+
         Label password1Label = new Label("Contraseña: ");
         PasswordField password1Field = new PasswordField();
+        password1Field.setPrefWidth(200);
+        password1Field.setPromptText("Introduce tu nueva contraseña");
+
         Label password2Label = new Label("Repetir contraseña: ");
         PasswordField password2Field = new PasswordField();
+        password2Field.setPrefWidth(200);
+        password2Field.setPromptText("Repite la nueva contraseña");
 
         formFields.add(nameLabel, 0, 0);
         formFields.add(nameField, 1, 0);
