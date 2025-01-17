@@ -11,10 +11,11 @@ public class Employee
 
     private boolean isOnline;
 
-    public Employee(String dni, String name, boolean isOnline)
+    public Employee(String dni, String name, String password, boolean isOnline)
     {
         this.dni = dni;
         this.name = name;
+        this.password = password;
         this.isOnline = isOnline;
     }
 }

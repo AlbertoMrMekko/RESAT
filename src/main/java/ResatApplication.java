@@ -7,7 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -59,9 +61,9 @@ public class ResatApplication extends Application
     private List<Employee> getAllEmployees()
     {
         // TODO mock 3 employees
-        Employee employee1 = new Employee("24682468H", "Employee1", false);
-        Employee employee2 = new Employee("13571357L", "Employee2", true);
-        Employee employee3 = new Employee("21436587X", "Employee3", false);
+        Employee employee1 = new Employee("24682468H", "Employee1", "wrongPassword", false);
+        Employee employee2 = new Employee("13571357L", "Employee2", "wrongPassword", true);
+        Employee employee3 = new Employee("21436587X", "Employee3", "wrongPassword", false);
         return List.of(employee1, employee2, employee3);
     }
 
@@ -166,6 +168,7 @@ public class ResatApplication extends Application
             System.out.println("Mostrar ventana de autenticación");
             System.out.println("Eliminar el empleado");
             System.out.println("Actualizar barra lateral");
+            showConfirmationWindow();
         });
         deleteEmployeeButton.setPrefSize(150, 40);
 
@@ -243,7 +246,6 @@ public class ResatApplication extends Application
             clearDynamicContent();
         });
         createEmployeeButton.setOnAction(event -> {
-            System.out.println("Mostrar ventana de confirmación");
             System.out.println("Crear nuevo empleado");
             System.out.println("Actualizar barra lateral");
         });
@@ -258,6 +260,98 @@ public class ResatApplication extends Application
 
         root.setCenter(employeeActions);
         root.setRight(deleteEmployee);
+    }
+
+    private void showConfirmationWindow()
+    {
+        Stage confirmationStage = new Stage();
+        confirmationStage.initModality(Modality.APPLICATION_MODAL);
+
+        BorderPane rootNode = new BorderPane();
+        Label title = new Label("Eliminar empleado");
+        Label text = new Label("¿Está seguro de que deseas eliminar el empleado " + selectedEmployee.getName() + "?");
+        HBox buttons = new HBox();
+
+        Button cancel = new Button("Cancelar");
+        cancel.setOnAction(event -> {
+            confirmationStage.close();
+        });
+
+        Button accept = new Button("Sí, eliminar empleado " + selectedEmployee.getName());
+        accept.setOnAction(event -> {
+            showAuthenticationWindow();
+            System.out.println("Eliminar empleado");
+            clearDynamicContent();
+            showSideBarLayout();
+        });
+
+        buttons.getChildren().addAll(cancel, accept);
+
+        rootNode.setTop(title);
+        rootNode.setCenter(text);
+        rootNode.setBottom(buttons);
+        Scene scene = new Scene(rootNode, 400, 300);
+
+        confirmationStage.setTitle("RESAT");
+        confirmationStage.setScene(scene);
+        confirmationStage.show();
+    }
+
+    private void showAuthenticationWindow()
+    {
+        Stage authenticationStage = new Stage();
+        authenticationStage.initModality(Modality.APPLICATION_MODAL);
+
+        BorderPane rootNode = new BorderPane();
+
+        Label title = new Label("Identifícate");
+
+        VBox content = new VBox(10);
+        Label text = new Label("Introduce tu contraseña para validar la acción");
+        PasswordField passwordField = new PasswordField();
+        passwordField.setOnAction(event -> {
+            if (validatePassword(passwordField.getText()))
+            {
+                System.out.println("Accion validada, continuar");
+            }
+            else
+            {
+                System.out.println("Mostrar mensaje contraseña errónea");
+            }
+        });
+
+        content.getChildren().addAll(text, passwordField);
+
+        HBox buttons = new HBox();
+
+        Button back = new Button("Atrás");
+        back.setOnAction(event -> {
+            authenticationStage.close();
+        });
+
+        Button accept = new Button("Aceptar");
+
+        // TODO código duplicado, crear método para unificar acción con botón Aceptar y pulsar Enter
+        accept.setOnAction(event -> {
+            System.out.println("Hacer lo mismo que en passwordField.setOnAction");
+        });
+
+        buttons.getChildren().addAll(back, accept);
+
+        rootNode.setTop(title);
+        rootNode.setCenter(content);
+        rootNode.setBottom(buttons);
+        Scene scene = new Scene(rootNode, 400, 300);
+
+        authenticationStage.setTitle("RESAT");
+        authenticationStage.setScene(scene);
+        authenticationStage.show();
+    }
+
+    private boolean validatePassword(String password)
+    {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.matches(password, selectedEmployee.getPassword());
     }
 
     /**
