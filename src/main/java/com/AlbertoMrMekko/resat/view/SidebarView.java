@@ -22,20 +22,16 @@ public class SidebarView
 
     private final EmployeeController employeeController;
 
-    private final EmployeeActionsView employeeActionsView;
-
-    private final CreateEmployeeView createEmployeeView;
+    private final ViewManager viewManager;
 
     @Autowired
     public SidebarView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                       final EmployeeController employeeController, final EmployeeActionsView employeeActionsView,
-                       final CreateEmployeeView createEmployeeView)
+                       final EmployeeController employeeController, final ViewManager viewManager)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;
         this.employeeController = employeeController;
-        this.employeeActionsView = employeeActionsView;
-        this.createEmployeeView = createEmployeeView;
+        this.viewManager = viewManager;
     }
 
     public void show()
@@ -86,7 +82,7 @@ public class SidebarView
             selectedEmployeeManager.setSelectedEmployee(employee);
             //clearDynamicContent(root);
             this.show();
-            this.employeeActionsView.show();
+            this.viewManager.showEmployeeActionsView();
         });
 
         row.getChildren().addAll(colorIndicator, nameLabel);
@@ -105,7 +101,7 @@ public class SidebarView
             selectedEmployeeManager.setSelectedEmployee(null);
             //clearDynamicContent(root);
             this.show();
-            this.createEmployeeView.show();
+            this.viewManager.showCreateEmployeeView();
         });
         addButton.setPrefSize(50, 30);
 

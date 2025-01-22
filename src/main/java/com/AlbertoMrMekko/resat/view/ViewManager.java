@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ViewManager
 {
-    private final BorderPane root;
-
     private final SidebarView sidebarView;
 
     private final EmployeeActionsView employeeActionsView;
@@ -22,12 +20,10 @@ public class ViewManager
     private final AuthenticationView authenticationView;
 
     @Autowired
-    public ViewManager(final BorderPane root, final SidebarView sidebarView,
-                       final EmployeeActionsView employeeActionsView, final CreateEmployeeView createEmployeeView,
-                       final ManualRecordView manualRecordView, final ConfirmationView confirmationView,
-                       final AuthenticationView authenticationView)
+    public ViewManager(final SidebarView sidebarView, final EmployeeActionsView employeeActionsView,
+                       final CreateEmployeeView createEmployeeView, final ManualRecordView manualRecordView,
+                       final ConfirmationView confirmationView, final AuthenticationView authenticationView)
     {
-        this.root = root;
         this.sidebarView = sidebarView;
         this.employeeActionsView = employeeActionsView;
         this.createEmployeeView = createEmployeeView;
@@ -38,19 +34,32 @@ public class ViewManager
 
     public void showSidebarView()
     {
-        root.setLeft(sidebarView.getView());
-        root.setCenter(null);
-        root.setRight(null);
+        this.sidebarView.show();
     }
 
     public void showEmployeeActionsView()
     {
-        root.setCenter(employeeActionsView.getView());
+        this.employeeActionsView.show();
+    }
+
+    public void showCreateEmployeeView()
+    {
+        this.createEmployeeView.show();
+    }
+
+    public void showManualRecordView()
+    {
+        this.manualRecordView.show();
     }
 
     public void showConfirmationView()
     {
-        root.setRight(confirmationView.getView());
+        this.confirmationView.show();
+    }
+
+    public void showAuthenticationView()
+    {
+        this.authenticationView.show();
     }
 
     // TODO crear clear para cada parte del root, averiguar desde dónde llamar a cada uno

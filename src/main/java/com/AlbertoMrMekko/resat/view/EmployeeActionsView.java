@@ -16,14 +16,14 @@ public class EmployeeActionsView
 
     private final SelectedEmployeeManager selectedEmployeeManager;
 
-    private final ConfirmationView confirmationView;
+    private final ViewManager viewManager;
 
     public EmployeeActionsView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                               final ConfirmationView confirmationView)
+                               final ViewManager viewManager)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;
-        this.confirmationView = confirmationView;
+        this.viewManager = viewManager;
     }
 
     public void show()
@@ -85,7 +85,7 @@ public class EmployeeActionsView
             System.out.println("Mostrar ventana de autenticación");
             System.out.println("Eliminar el empleado");
             System.out.println("Actualizar barra lateral");
-            this.confirmationView.show();
+            this.viewManager.showConfirmationView();
         });
         deleteEmployeeButton.setPrefSize(150, 40);
 

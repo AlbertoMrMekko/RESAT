@@ -14,21 +14,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConfirmationView
 {
-    private final BorderPane root;
-
     private final SelectedEmployeeManager selectedEmployeeManager;
 
-    private final AuthenticationView authenticationView;
+    private final ViewManager viewManager;
 
-    private final SidebarView sidebarView;
-
-    public ConfirmationView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                            final AuthenticationView authenticationView, final SidebarView sidebarView)
+    public ConfirmationView(final SelectedEmployeeManager selectedEmployeeManager, final ViewManager viewManager)
     {
-        this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;
-        this.authenticationView = authenticationView;
-        this.sidebarView = sidebarView;
+        this.viewManager = viewManager;
     }
 
     public void show()
@@ -50,10 +43,10 @@ public class ConfirmationView
 
         Button accept = new Button("Sí, eliminar empleado " + selectedEmployee.getName());
         accept.setOnAction(event -> {
-            this.authenticationView.show();
+            this.viewManager.showAuthenticationView();
             System.out.println("Eliminar empleado");
             //clearDynamicContent(root);
-            sidebarView.show();
+            this.viewManager.showSidebarView();
         });
 
         buttons.getChildren().addAll(cancel, accept);
