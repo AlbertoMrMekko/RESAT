@@ -1,3 +1,5 @@
+package com.AlbertoMrMekko.resat.model;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
