@@ -1,6 +1,6 @@
 package com.AlbertoMrMekko.resat;
 
-import com.AlbertoMrMekko.resat.view.SidebarView;
+import com.AlbertoMrMekko.resat.view.ViewManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -29,8 +29,8 @@ public class ResatApplication extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        SidebarView sidebarView = applicationContext.getBean(SidebarView.class);
-        sidebarView.show();
+        ViewManager viewManager = applicationContext.getBean(ViewManager.class);
+        viewManager.showSidebarView();
 
         BorderPane root = applicationContext.getBean(BorderPane.class);
         Scene scene = new Scene(root, 1125, 750);

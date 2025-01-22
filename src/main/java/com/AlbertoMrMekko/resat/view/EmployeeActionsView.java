@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +20,7 @@ public class EmployeeActionsView
     private final ViewManager viewManager;
 
     public EmployeeActionsView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                               final ViewManager viewManager)
+                               @Lazy final ViewManager viewManager)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;

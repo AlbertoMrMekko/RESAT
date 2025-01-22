@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class SidebarView
 
     @Autowired
     public SidebarView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                       final EmployeeController employeeController, final ViewManager viewManager)
+                       final EmployeeController employeeController, @Lazy final ViewManager viewManager)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;

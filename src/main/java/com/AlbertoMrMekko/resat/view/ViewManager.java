@@ -19,10 +19,13 @@ public class ViewManager
 
     private final AuthenticationView authenticationView;
 
+    private final BorderPane root;
+
     @Autowired
     public ViewManager(final SidebarView sidebarView, final EmployeeActionsView employeeActionsView,
                        final CreateEmployeeView createEmployeeView, final ManualRecordView manualRecordView,
-                       final ConfirmationView confirmationView, final AuthenticationView authenticationView)
+                       final ConfirmationView confirmationView, final AuthenticationView authenticationView,
+                       final BorderPane root)
     {
         this.sidebarView = sidebarView;
         this.employeeActionsView = employeeActionsView;
@@ -30,6 +33,7 @@ public class ViewManager
         this.manualRecordView = manualRecordView;
         this.confirmationView = confirmationView;
         this.authenticationView = authenticationView;
+        this.root = root;
     }
 
     public void showSidebarView()
@@ -39,16 +43,19 @@ public class ViewManager
 
     public void showEmployeeActionsView()
     {
+        clearDynamicContent();
         this.employeeActionsView.show();
     }
 
     public void showCreateEmployeeView()
     {
+        clearDynamicContent();
         this.createEmployeeView.show();
     }
 
     public void showManualRecordView()
     {
+        clearDynamicContent();
         this.manualRecordView.show();
     }
 
@@ -63,7 +70,7 @@ public class ViewManager
     }
 
     // TODO crear clear para cada parte del root, averiguar desde dónde llamar a cada uno
-    public void clearDynamicContent(BorderPane root)
+    public void clearDynamicContent()
     {
         root.setCenter(null);
         root.setRight(null);

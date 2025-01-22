@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,9 +15,12 @@ public class CreateEmployeeView
 {
     private final BorderPane root;
 
-    public CreateEmployeeView(BorderPane root)
+    private final ViewManager viewManager;
+
+    public CreateEmployeeView(final BorderPane root, @Lazy final ViewManager viewManager)
     {
         this.root = root;
+        this.viewManager = viewManager;
     }
 
     public void show()
@@ -95,7 +99,7 @@ public class CreateEmployeeView
         buttons.getChildren().addAll(cancelButton, createEmployeeButton);
 
         cancelButton.setOnAction(event -> {
-            //clearDynamicContent(root);
+            this.viewManager.clearDynamicContent();
         });
         createEmployeeButton.setOnAction(event -> {
             System.out.println("Crear nuevo empleado");

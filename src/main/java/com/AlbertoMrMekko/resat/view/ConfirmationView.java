@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +19,7 @@ public class ConfirmationView
 
     private final ViewManager viewManager;
 
-    public ConfirmationView(final SelectedEmployeeManager selectedEmployeeManager, final ViewManager viewManager)
+    public ConfirmationView(final SelectedEmployeeManager selectedEmployeeManager, @Lazy final ViewManager viewManager)
     {
         this.selectedEmployeeManager = selectedEmployeeManager;
         this.viewManager = viewManager;
