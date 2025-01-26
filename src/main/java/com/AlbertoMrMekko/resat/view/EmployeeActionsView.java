@@ -55,7 +55,7 @@ public class EmployeeActionsView
 
         Button manualInputButton = new Button("Registro manual");
         manualInputButton.setOnAction(event -> {
-            System.out.println("Mostrar formulario para el registro manual");
+            this.viewManager.showManualRecordView();
             System.out.println("Tras rellenar formulario:" + "Mostrar ventana de autenticación " + "Registrar " +
                     "entrada/salida del empleado" + "Actualizar barra lateral" + "Actualizar acciones empleado");
         });
@@ -86,7 +86,7 @@ public class EmployeeActionsView
             System.out.println("Mostrar ventana de autenticación");
             System.out.println("Eliminar el empleado");
             System.out.println("Actualizar barra lateral");
-            this.viewManager.showConfirmationView();
+            this.viewManager.showDeleteEmployeeConfirmationView();
         });
         deleteEmployeeButton.setPrefSize(150, 40);
 

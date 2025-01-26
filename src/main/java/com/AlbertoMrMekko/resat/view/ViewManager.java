@@ -1,5 +1,6 @@
 package com.AlbertoMrMekko.resat.view;
 
+import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import javafx.scene.layout.BorderPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,9 +60,14 @@ public class ViewManager
         this.manualRecordView.show();
     }
 
-    public void showConfirmationView()
+    public void showDeleteEmployeeConfirmationView()
     {
-        this.confirmationView.show();
+        this.confirmationView.showDeleteEmployeeConfirmationView();
+    }
+
+    public void showManualRecordConfirmationView(EmployeeRecord record)
+    {
+        this.confirmationView.showManualRecordConfirmationView(record);
     }
 
     public void showAuthenticationView()

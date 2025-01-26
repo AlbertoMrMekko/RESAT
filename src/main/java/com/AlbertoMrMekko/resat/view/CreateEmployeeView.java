@@ -1,11 +1,10 @@
 package com.AlbertoMrMekko.resat.view;
 
+import com.AlbertoMrMekko.resat.controller.EmployeeController;
+import com.AlbertoMrMekko.resat.utils.ValidationResult;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -17,10 +16,22 @@ public class CreateEmployeeView
 
     private final ViewManager viewManager;
 
-    public CreateEmployeeView(final BorderPane root, @Lazy final ViewManager viewManager)
+    private final EmployeeController employeeController;
+
+    private TextField nameField;
+
+    private TextField dniField;
+
+    private PasswordField passwordField;
+
+    private PasswordField password2Field;
+
+    public CreateEmployeeView(final BorderPane root, @Lazy final ViewManager viewManager,
+                              final EmployeeController employeeController)
     {
         this.root = root;
         this.viewManager = viewManager;
+        this.employeeController = employeeController;
     }
 
     public void show()
@@ -53,23 +64,23 @@ public class CreateEmployeeView
         formFields.setVgap(10);
         formFields.setAlignment(Pos.CENTER);
 
-        Label nameLabel = new Label("Nombre: ");
-        TextField nameField = new TextField();
+        Label nameLabel = new Label("Nombre ");
+        nameField = new TextField();
         nameField.setPrefWidth(200);
-        nameField.setPromptText("Introduce tu nombre");
+        nameField.setPromptText("Ej. Daniel");
 
-        Label dniLabel = new Label("DNI: ");
-        TextField dniField = new TextField();
+        Label dniLabel = new Label("DNI ");
+        dniField = new TextField();
         dniField.setPrefWidth(200);
-        dniField.setPromptText("Introduce tu DNI");
+        dniField.setPromptText("Ej. 12345678Z");
 
         Label password1Label = new Label("Contraseña: ");
-        PasswordField password1Field = new PasswordField();
-        password1Field.setPrefWidth(200);
-        password1Field.setPromptText("Introduce tu nueva contraseña");
+        passwordField = new PasswordField();
+        passwordField.setPrefWidth(200);
+        passwordField.setPromptText("Introduce tu nueva contraseña");
 
         Label password2Label = new Label("Repetir contraseña: ");
-        PasswordField password2Field = new PasswordField();
+        password2Field = new PasswordField();
         password2Field.setPrefWidth(200);
         password2Field.setPromptText("Repite la nueva contraseña");
 
@@ -78,7 +89,7 @@ public class CreateEmployeeView
         formFields.add(dniLabel, 0, 1);
         formFields.add(dniField, 1, 1);
         formFields.add(password1Label, 0, 2);
-        formFields.add(password1Field, 1, 2);
+        formFields.add(passwordField, 1, 2);
         formFields.add(password2Label, 0, 3);
         formFields.add(password2Field, 1, 3);
 
@@ -102,20 +113,36 @@ public class CreateEmployeeView
             this.viewManager.clearDynamicContent();
         });
         createEmployeeButton.setOnAction(event -> {
-            System.out.println("Crear nuevo empleado");
-            System.out.println("Actualizar barra lateral");
-            /*if (validateNewEmployeeInputs())
+            String name = nameField.getText();
+            String dni = dniField.getText();
+            String password = passwordField.getText();
+            String password2 = password2Field.getText();
+            ValidationResult validationResult = this.employeeController.validateCreateEmployee(name, dni, password, password2);
+            if (validationResult.valid())
             {
-                System.out.println("Crear nuevo empleado");
+                System.out.println("Crear empleado");
                 System.out.println("Actualizar barra lateral");
-                System.out.println("Clear dynamic content");
+                System.out.println("root center y right a null");
+                System.out.println("Mostrar mensaje de éxito (alerta de info)");
             }
             else
             {
-                System.out.println("Mostrar mensaje con problema");
-            }*/
+                showErrorAlert(validationResult.errorMsg());
+            }
+
         });
 
         return buttons;
+    }
+
+    public void showErrorAlert(String errorMessage)
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+
+        alert.setTitle("RESAT - Error");
+        alert.setHeaderText("Error en la creación de empleado");
+        alert.setContentText(errorMessage);
+
+        alert.showAndWait();
     }
 }
