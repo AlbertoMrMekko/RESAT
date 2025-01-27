@@ -10,12 +10,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.Getter;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ConfirmationView
 {
+    @Getter
+    private boolean confirmed;
+
     private final SelectedEmployeeManager selectedEmployeeManager;
 
     private final ViewManager viewManager;
@@ -39,11 +43,15 @@ public class ConfirmationView
 
         Button cancel = new Button("Cancelar");
         cancel.setOnAction(event -> {
+            confirmed = false;
             confirmationStage.close();
         });
 
         Button accept = new Button("Sí, eliminar empleado " + selectedEmployee.getName());
         accept.setOnAction(event -> {
+            confirmed = true;
+            confirmationStage.close();
+
             this.viewManager.showAuthenticationView();
             System.out.println("Eliminar empleado");
             //clearDynamicContent(root);

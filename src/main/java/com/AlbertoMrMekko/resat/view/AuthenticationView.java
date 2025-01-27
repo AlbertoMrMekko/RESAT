@@ -1,6 +1,7 @@
 package com.AlbertoMrMekko.resat.view;
 
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
+import com.AlbertoMrMekko.resat.service.AuthenticationService;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,9 +19,13 @@ public class AuthenticationView
 {
     private final SelectedEmployeeManager selectedEmployeeManager;
 
-    public AuthenticationView(final SelectedEmployeeManager selectedEmployeeManager)
+    private final AuthenticationService authenticationService;
+
+    public AuthenticationView(final SelectedEmployeeManager selectedEmployeeManager,
+                              final AuthenticationService authenticationService)
     {
         this.selectedEmployeeManager = selectedEmployeeManager;
+        this.authenticationService = authenticationService;
     }
 
     public void show()
@@ -36,7 +41,7 @@ public class AuthenticationView
         Label text = new Label("Introduce tu contraseña para validar la acción");
         PasswordField passwordField = new PasswordField();
         passwordField.setOnAction(event -> {
-            if (validatePassword(passwordField.getText()))
+            if (this.authenticationService.validatePassword(passwordField.getText(), this.selectedEmployeeManager.getSelectedEmployee().getPassword()))
             {
                 System.out.println("Accion validada, continuar");
             }
@@ -72,11 +77,5 @@ public class AuthenticationView
         authenticationStage.setTitle("RESAT");
         authenticationStage.setScene(scene);
         authenticationStage.show();
-    }
-
-    private boolean validatePassword(String password)
-    {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return passwordEncoder.matches(password, this.selectedEmployeeManager.getSelectedEmployee().getPassword());
     }
 }

@@ -1,6 +1,6 @@
 package com.AlbertoMrMekko.resat.view;
 
-import com.AlbertoMrMekko.resat.controller.EmployeeController;
+import com.AlbertoMrMekko.resat.service.EmployeeService;
 import com.AlbertoMrMekko.resat.model.Employee;
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
 import javafx.geometry.Insets;
@@ -21,17 +21,17 @@ public class SidebarView
 
     private final SelectedEmployeeManager selectedEmployeeManager;
 
-    private final EmployeeController employeeController;
+    private final EmployeeService employeeService;
 
     private final ViewManager viewManager;
 
     @Autowired
     public SidebarView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                       final EmployeeController employeeController, @Lazy final ViewManager viewManager)
+                       final EmployeeService employeeService, @Lazy final ViewManager viewManager)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;
-        this.employeeController = employeeController;
+        this.employeeService = employeeService;
         this.viewManager = viewManager;
     }
 
@@ -40,7 +40,7 @@ public class SidebarView
         VBox sidebar = new VBox();
         sidebar.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
 
-        List<Employee> employees = this.employeeController.getEmployees();
+        List<Employee> employees = this.employeeService.getEmployees();
         Employee selectedEmployee = this.selectedEmployeeManager.getSelectedEmployee();
         for (Employee employee : employees)
         {

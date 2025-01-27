@@ -1,13 +1,13 @@
 package com.AlbertoMrMekko.resat.service;
 
 import com.AlbertoMrMekko.resat.model.Employee;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class FileManager
 {
     private final File appDir;
@@ -72,5 +72,48 @@ public class FileManager
             System.err.println("Error al leer el archivo CSV: " + e.getMessage());
         }
         return employees;
+    }
+
+    public void addEmployee(Employee employee)
+    {
+        try (FileWriter writer = new FileWriter(employeesFile, true))
+        {
+            String line = String.format("%s,%s,%s\n", employee.getName(), employee.getDni(), employee.getPassword());
+            writer.write(line);
+        } catch (IOException e)
+        {
+            System.err.println("Error al añadir empleado a empleados.csv: " + e.getMessage());
+        }
+    }
+
+    public void deleteEmployee(String dni)
+    {
+        try
+        {
+            List<String> lines = new ArrayList<>();
+            try (BufferedReader br = new BufferedReader(new FileReader(employeesFile)))
+            {
+                String line;
+                while ((line = br.readLine()) != null)
+                {
+                    if (!line.split(",")[1].equals(dni))
+                    {
+                        lines.add(line);
+                    }
+                }
+            }
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(employeesFile)))
+            {
+                for (String line : lines)
+                {
+                    bw.write(line);
+                    bw.newLine();
+                }
+            }
+            System.out.println("Empleado eliminado: " + dni);
+        } catch (IOException e)
+        {
+            System.err.println("Error al eliminar empleado: " + e.getMessage());
+        }
     }
 }

@@ -82,11 +82,17 @@ public class EmployeeActionsView
         deleteEmployeePane.setAlignment(Pos.TOP_RIGHT);
         Button deleteEmployeeButton = new Button("Eliminar empleado");
         deleteEmployeeButton.setOnAction(event -> {
-            System.out.println("Mostrar ventana de confirmación");
-            System.out.println("Mostrar ventana de autenticación");
-            System.out.println("Eliminar el empleado");
-            System.out.println("Actualizar barra lateral");
+            // TODO mover a un método aparte (?)
             this.viewManager.showDeleteEmployeeConfirmationView();
+            // TODO
+            //  if Cancelar => showEmployeeActions
+            //  if Aceptar:
+            //  showAuthenticationView
+            //  if Atrás => showEmployeeActions
+            //  if Contra incorrecta => Reintentar y mostrar alerta error
+            //  if Contra correcta:
+            //  Eliminar empleado de list employees y de empleados.csv
+            //  Actualizar barra lateral y clearDynamicContent
         });
         deleteEmployeeButton.setPrefSize(150, 40);
 

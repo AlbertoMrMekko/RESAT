@@ -1,6 +1,7 @@
 package com.AlbertoMrMekko.resat.view;
 
-import com.AlbertoMrMekko.resat.controller.EmployeeController;
+import com.AlbertoMrMekko.resat.service.EmployeeService;
+import com.AlbertoMrMekko.resat.service.NotificationService;
 import com.AlbertoMrMekko.resat.utils.ValidationResult;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,7 +17,9 @@ public class CreateEmployeeView
 
     private final ViewManager viewManager;
 
-    private final EmployeeController employeeController;
+    private final EmployeeService employeeService;
+
+    private final NotificationService notificationService;
 
     private TextField nameField;
 
@@ -27,11 +30,13 @@ public class CreateEmployeeView
     private PasswordField password2Field;
 
     public CreateEmployeeView(final BorderPane root, @Lazy final ViewManager viewManager,
-                              final EmployeeController employeeController)
+                              final EmployeeService employeeService,
+                              final NotificationService notificationService)
     {
         this.root = root;
         this.viewManager = viewManager;
-        this.employeeController = employeeController;
+        this.employeeService = employeeService;
+        this.notificationService = notificationService;
     }
 
     public void show()
@@ -117,17 +122,20 @@ public class CreateEmployeeView
             String dni = dniField.getText();
             String password = passwordField.getText();
             String password2 = password2Field.getText();
-            ValidationResult validationResult = this.employeeController.validateCreateEmployee(name, dni, password, password2);
+            ValidationResult validationResult = this.employeeService.validateCreateEmployee(name, dni, password,
+                    password2);
             if (validationResult.valid())
             {
-                System.out.println("Crear empleado");
-                System.out.println("Actualizar barra lateral");
-                System.out.println("root center y right a null");
-                System.out.println("Mostrar mensaje de éxito (alerta de info)");
+                this.employeeService.createEmployee(dni, name, password);
+                this.viewManager.showSidebarView();
+                this.viewManager.clearDynamicContent();
+                this.notificationService.showInfoAlert("Creación de empleado", "El empleado " + name + " se ha creado" +
+                        " correctamente");
             }
             else
             {
-                showErrorAlert(validationResult.errorMsg());
+                this.notificationService.showErrorAlert("Error en la creación de empleado",
+                        validationResult.errorMsg());
             }
 
         });
@@ -135,14 +143,5 @@ public class CreateEmployeeView
         return buttons;
     }
 
-    public void showErrorAlert(String errorMessage)
-    {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
 
-        alert.setTitle("RESAT - Error");
-        alert.setHeaderText("Error en la creación de empleado");
-        alert.setContentText(errorMessage);
-
-        alert.showAndWait();
-    }
 }
