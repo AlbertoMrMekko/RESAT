@@ -22,26 +22,14 @@ public class EmployeeService
     public EmployeeService(final FileManager fileManager, final AuthenticationService authenticationService)
     {
         this.fileManager = fileManager;
-        //this.employees = getEmployeesFromDB();
         this.employees = loadEmployees();
         this.authenticationService = authenticationService;
-    }
-
-    private List<Employee> getEmployeesFromDB()
-    {
-        // TODO get employees from csv file
-
-        // fixme for the moment, mock 3 employees
-        Employee employee1 = new Employee("24682468H", "Employee1", "wrongPassword", false);
-        Employee employee2 = new Employee("13571357L", "Employee2", "wrongPassword", true);
-        Employee employee3 = new Employee("21436587X", "Employee3", "wrongPassword", false);
-        return List.of(employee1, employee2, employee3);
     }
 
     private List<Employee> loadEmployees()
     {
         List<Employee> employees = this.fileManager.readEmployeesFromCsv();
-        // TODO falta status de cada empleado inicial
+        this.fileManager.initEmployeesStatus(employees);
         return employees;
     }
 
