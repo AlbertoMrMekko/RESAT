@@ -1,6 +1,8 @@
 package com.AlbertoMrMekko.resat.view;
 
-import com.AlbertoMrMekko.resat.model.EmployeeRecord;
+import com.AlbertoMrMekko.resat.service.NotificationService;
+import com.AlbertoMrMekko.resat.service.RecordService;
+import com.AlbertoMrMekko.resat.utils.ValidationResult;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,7 +12,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Component
 public class ManualRecordView
@@ -19,10 +20,25 @@ public class ManualRecordView
 
     private final ViewManager viewManager;
 
-    public ManualRecordView(final BorderPane root, @Lazy final ViewManager viewManager)
+    private final RecordService recordService;
+
+    private final NotificationService notificationService;
+
+    private DatePicker dateField;
+
+    private ComboBox<String> hourComboBox;
+
+    private ComboBox<String> minuteComboBox;
+
+    private ToggleGroup actionGroup;
+
+    public ManualRecordView(final BorderPane root, @Lazy final ViewManager viewManager,
+                            final RecordService recordService, final NotificationService notificationService)
     {
         this.root = root;
         this.viewManager = viewManager;
+        this.recordService = recordService;
+        this.notificationService = notificationService;
     }
 
     public void show()
@@ -56,18 +72,19 @@ public class ManualRecordView
         formFields.setAlignment(Pos.CENTER);
 
         Label dateLabel = new Label("Día: ");
-        DatePicker dateField = new DatePicker();
+        dateField = new DatePicker();
         dateField.setPrefWidth(200);
-        dateField.setPromptText("dd/mm/aaaa");
+        dateField.getEditor().setDisable(true);
+        dateField.getEditor().setOpacity(1);
 
         Label timeLabel = new Label("Hora: ");
-        ComboBox<String> hourComboBox = new ComboBox<>(FXCollections.observableArrayList(generateHours()));
-        ComboBox<String> minuteComboBox = new ComboBox<>(FXCollections.observableArrayList(generateMinutes()));
+        hourComboBox = new ComboBox<>(FXCollections.observableArrayList(generateHours()));
+        minuteComboBox = new ComboBox<>(FXCollections.observableArrayList(generateMinutes()));
         hourComboBox.setPromptText("Hora");
         minuteComboBox.setPromptText("Minuto");
 
         Label actionLabel = new Label("Acción: ");
-        ToggleGroup actionGroup = new ToggleGroup();
+        actionGroup = new ToggleGroup();
         RadioButton entryButton = new RadioButton("Entrar");
         entryButton.setToggleGroup(actionGroup);
         RadioButton exitButton = new RadioButton("Salir");
@@ -109,29 +126,56 @@ public class ManualRecordView
             this.viewManager.showEmployeeActionsView();
         });
         acceptButton.setOnAction(event -> {
-            // fixme with inputs
             String employeeDni = "";
-            String action = "";
-            LocalDate date = LocalDate.now();
-            LocalTime time = LocalTime.now();
-            EmployeeRecord record = new EmployeeRecord(employeeDni, action, date, time);
-            this.viewManager.showManualRecordConfirmationView(record);
+
+            // TODO pasos para registro manual:
+            //  1. obtener inputs
+            //  2. verificar inputs
+            //  3. confirmar
+            //  4. autenticar
+            //  5. registrar
+            //  6. mostrar acciones empleado
+
+            LocalDate date = dateField.getValue() != null ? LocalDate.parse(dateField.getValue().toString()) : null;
+            String hour = hourComboBox.getValue() != null ? hourComboBox.getValue() : null;
+            String minute = minuteComboBox.getValue() != null ? minuteComboBox.getValue() : null;
+            RadioButton selectedAction = (RadioButton) actionGroup.getSelectedToggle();
+            String action = selectedAction != null ? selectedAction.getText() : null;
+            System.out.println(date + " , " + hour + " , " + minute + " , " + action);
+
+            ValidationResult validationResult = this.recordService.validateManualRecord(date, hour, minute, action);
+            if (validationResult.valid())
+            {
+                // TODO => confirmacion, autenticacion, registro, actualizar barra lateral, mostrar acciones empleado
+                // this.recordService.manualRecord();
+                // this.viewManager.showSidebarView();
+                // this.viewManager.clearDynamicContent();
+                this.notificationService.showInfoAlert("Registro", "El registro se ha llevado a cabo con éxito");
+            }
+            else
+            {
+                this.notificationService.showErrorAlert("Error en el registro manual", validationResult.errorMsg());
+            }
         });
 
         return buttons;
     }
 
-    private String[] generateHours() {
+    private String[] generateHours()
+    {
         String[] hours = new String[24];
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 24; i++)
+        {
             hours[i] = String.format("%02d", i);
         }
         return hours;
     }
 
-    private String[] generateMinutes() {
+    private String[] generateMinutes()
+    {
         String[] minutes = new String[60];
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 60; i++)
+        {
             minutes[i] = String.format("%02d", i);
         }
         return minutes;
