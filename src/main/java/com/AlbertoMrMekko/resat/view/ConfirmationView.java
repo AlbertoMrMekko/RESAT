@@ -1,6 +1,5 @@
 package com.AlbertoMrMekko.resat.view;
 
-import com.AlbertoMrMekko.resat.model.Employee;
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
 import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import javafx.scene.Scene;
@@ -11,7 +10,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,25 +20,33 @@ public class ConfirmationView
 
     private final SelectedEmployeeManager selectedEmployeeManager;
 
-    private final ViewManager viewManager;
-
-    public ConfirmationView(final SelectedEmployeeManager selectedEmployeeManager, @Lazy final ViewManager viewManager)
+    public ConfirmationView(final SelectedEmployeeManager selectedEmployeeManager)
     {
         this.selectedEmployeeManager = selectedEmployeeManager;
-        this.viewManager = viewManager;
     }
 
     public void showDeleteEmployeeConfirmationView()
+    {
+        String selectedEmployeeName = this.selectedEmployeeManager.getSelectedEmployee().getName();
+        show("Eliminar empleado", "¿Está seguro de que deseas eliminar el empleado " + selectedEmployeeName + "?");
+    }
+
+    public void showManualRecordConfirmationView(EmployeeRecord record)
+    {
+        show("Registro manual", "Se registrará la " + record.getAction() + " para el día " + record.getDate() + " a " +
+                "las " + record.getTime());
+    }
+
+    private void show(String title, String text)
     {
         this.confirmation = false;
         Stage confirmationStage = new Stage();
         confirmationStage.initModality(Modality.APPLICATION_MODAL);
 
-        Employee selectedEmployee = this.selectedEmployeeManager.getSelectedEmployee();
-
         BorderPane rootNode = new BorderPane();
-        Label title = new Label("Eliminar empleado");
-        Label text = new Label("¿Está seguro de que deseas eliminar el empleado " + selectedEmployee.getName() + "?");
+
+        Label titleLabel = new Label(title);
+        Label textLabel = new Label(text);
 
         Button cancel = new Button("Cancelar");
         cancel.setOnAction(event -> {
@@ -48,7 +54,7 @@ public class ConfirmationView
             confirmationStage.close();
         });
 
-        Button accept = new Button("Sí, eliminar empleado " + selectedEmployee.getName());
+        Button accept = new Button("Aceptar");
         accept.setOnAction(event -> {
             confirmation = true;
             confirmationStage.close();
@@ -57,52 +63,13 @@ public class ConfirmationView
         HBox buttons = new HBox();
         buttons.getChildren().addAll(cancel, accept);
 
-        rootNode.setTop(title);
-        rootNode.setCenter(text);
+        rootNode.setTop(titleLabel);
+        rootNode.setCenter(textLabel);
         rootNode.setBottom(buttons);
         Scene scene = new Scene(rootNode, 400, 300);
 
         confirmationStage.setTitle("RESAT");
         confirmationStage.setScene(scene);
         confirmationStage.showAndWait();
-    }
-
-    public void showManualRecordConfirmationView(EmployeeRecord record)
-    {
-        Stage confirmationStage = new Stage();
-        confirmationStage.initModality(Modality.APPLICATION_MODAL);
-
-        Employee selectedEmployee = this.selectedEmployeeManager.getSelectedEmployee();
-
-        BorderPane rootNode = new BorderPane();
-        Label title = new Label("Registro manual");
-        Label text = new Label("Se registrará la " + record.getAction() + " para el día " + record.getDate() +
-                " a las " + record.getTime());
-
-        Button cancel = new Button("Cancelar");
-        cancel.setOnAction(event -> {
-            confirmationStage.close();
-        });
-
-        Button accept = new Button("Aceptar");
-        accept.setOnAction(event -> {
-            this.viewManager.showAuthenticationView();
-            System.out.println("Registrar");
-            //clearDynamicContent(root);
-            this.viewManager.showSidebarView();
-            this.viewManager.showEmployeeActionsView();
-        });
-
-        HBox buttons = new HBox();
-        buttons.getChildren().addAll(cancel, accept);
-
-        rootNode.setTop(title);
-        rootNode.setCenter(text);
-        rootNode.setBottom(buttons);
-        Scene scene = new Scene(rootNode, 400, 300);
-
-        confirmationStage.setTitle("RESAT");
-        confirmationStage.setScene(scene);
-        confirmationStage.show();
     }
 }
