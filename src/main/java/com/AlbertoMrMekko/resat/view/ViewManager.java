@@ -60,9 +60,10 @@ public class ViewManager
         this.manualRecordView.show();
     }
 
-    public void showDeleteEmployeeConfirmationView()
+    public boolean showDeleteEmployeeConfirmationView()
     {
         this.confirmationView.showDeleteEmployeeConfirmationView();
+        return this.confirmationView.isConfirmation();
     }
 
     public void showManualRecordConfirmationView(EmployeeRecord record)
@@ -70,12 +71,12 @@ public class ViewManager
         this.confirmationView.showManualRecordConfirmationView(record);
     }
 
-    public void showAuthenticationView()
+    public boolean showAuthenticationView()
     {
         this.authenticationView.show();
+        return this.authenticationView.isAuthenticated();
     }
 
-    // TODO crear clear para cada parte del root, averiguar desde dónde llamar a cada uno
     public void clearDynamicContent()
     {
         root.setCenter(null);

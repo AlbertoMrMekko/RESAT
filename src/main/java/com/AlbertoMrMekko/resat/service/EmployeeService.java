@@ -1,9 +1,11 @@
 package com.AlbertoMrMekko.resat.service;
 
 import com.AlbertoMrMekko.resat.utils.ValidationResult;
+import com.AlbertoMrMekko.resat.view.ViewManager;
 import lombok.Getter;
 import com.AlbertoMrMekko.resat.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +20,19 @@ public class EmployeeService
 
     private final AuthenticationService authenticationService;
 
+    private final ViewManager viewManager;
+
+    private final NotificationService notificationService;
+
     @Autowired
-    public EmployeeService(final FileManager fileManager, final AuthenticationService authenticationService)
+    public EmployeeService(final FileManager fileManager, final AuthenticationService authenticationService,
+                           @Lazy final ViewManager viewManager, final NotificationService notificationService)
     {
         this.fileManager = fileManager;
         this.employees = loadEmployees();
         this.authenticationService = authenticationService;
+        this.viewManager = viewManager;
+        this.notificationService = notificationService;
     }
 
     private List<Employee> loadEmployees()
@@ -53,7 +62,7 @@ public class EmployeeService
         {
             if (employee.getName().equals(name))
             {
-                return new ValidationResult(false, "Ya existe un empleado llamado" + name);
+                return new ValidationResult(false, "Ya existe un empleado llamado " + name);
             }
             if (employee.getDni().equals(dni))
             {
@@ -69,5 +78,22 @@ public class EmployeeService
         Employee employee = new Employee(dni, name, encodedPassword, false);
         this.fileManager.addEmployee(employee);
         this.employees.add(employee);
+    }
+
+    public void deleteEmployee(Employee employee)
+    {
+        boolean confirmation = this.viewManager.showDeleteEmployeeConfirmationView();
+        if (confirmation)
+        {
+            boolean authenticated = this.viewManager.showAuthenticationView();
+            if (authenticated)
+            {
+                this.employees.remove(employee);
+                this.fileManager.deleteEmployee(employee.getDni());
+                this.viewManager.clearDynamicContent();
+                this.viewManager.showSidebarView();
+                this.notificationService.showInfoAlert("Empleado eliminado", "El empleado se ha eliminado con éxito");
+            }
+        }
     }
 }

@@ -114,7 +114,7 @@ public class FileManager
                     bw.newLine();
                 }
             }
-            System.out.println("Empleado eliminado: " + dni);
+            System.out.println("Empleado con DNI " + dni + " eliminado");
         } catch (IOException e)
         {
             System.err.println("Error al eliminar empleado: " + e.getMessage());

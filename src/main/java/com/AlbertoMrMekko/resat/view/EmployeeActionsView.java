@@ -1,6 +1,7 @@
 package com.AlbertoMrMekko.resat.view;
 
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
+import com.AlbertoMrMekko.resat.service.EmployeeService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -19,12 +20,15 @@ public class EmployeeActionsView
 
     private final ViewManager viewManager;
 
+    private final EmployeeService employeeService;
+
     public EmployeeActionsView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                               @Lazy final ViewManager viewManager)
+                               @Lazy final ViewManager viewManager, final EmployeeService employeeService)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;
         this.viewManager = viewManager;
+        this.employeeService = employeeService;
     }
 
     public void show()
@@ -82,17 +86,7 @@ public class EmployeeActionsView
         deleteEmployeePane.setAlignment(Pos.TOP_RIGHT);
         Button deleteEmployeeButton = new Button("Eliminar empleado");
         deleteEmployeeButton.setOnAction(event -> {
-            // TODO mover a un método aparte (?)
-            this.viewManager.showDeleteEmployeeConfirmationView();
-            // TODO
-            //  if Cancelar => showEmployeeActions
-            //  if Aceptar:
-            //  showAuthenticationView
-            //  if Atrás => showEmployeeActions
-            //  if Contra incorrecta => Reintentar y mostrar alerta error
-            //  if Contra correcta:
-            //  Eliminar empleado de list employees y de empleados.csv
-            //  Actualizar barra lateral y clearDynamicContent
+            this.employeeService.deleteEmployee(selectedEmployeeManager.getSelectedEmployee());
         });
         deleteEmployeeButton.setPrefSize(150, 40);
 

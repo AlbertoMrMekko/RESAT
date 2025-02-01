@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class ConfirmationView
 {
     @Getter
-    private boolean confirmed;
+    private boolean confirmation;
 
     private final SelectedEmployeeManager selectedEmployeeManager;
 
@@ -32,6 +32,7 @@ public class ConfirmationView
 
     public void showDeleteEmployeeConfirmationView()
     {
+        this.confirmation = false;
         Stage confirmationStage = new Stage();
         confirmationStage.initModality(Modality.APPLICATION_MODAL);
 
@@ -43,19 +44,14 @@ public class ConfirmationView
 
         Button cancel = new Button("Cancelar");
         cancel.setOnAction(event -> {
-            confirmed = false;
+            confirmation = false;
             confirmationStage.close();
         });
 
         Button accept = new Button("Sí, eliminar empleado " + selectedEmployee.getName());
         accept.setOnAction(event -> {
-            confirmed = true;
+            confirmation = true;
             confirmationStage.close();
-
-            this.viewManager.showAuthenticationView();
-            System.out.println("Eliminar empleado");
-            //clearDynamicContent(root);
-            this.viewManager.showSidebarView();
         });
 
         HBox buttons = new HBox();
@@ -68,7 +64,7 @@ public class ConfirmationView
 
         confirmationStage.setTitle("RESAT");
         confirmationStage.setScene(scene);
-        confirmationStage.show();
+        confirmationStage.showAndWait();
     }
 
     public void showManualRecordConfirmationView(EmployeeRecord record)

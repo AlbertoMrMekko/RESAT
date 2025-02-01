@@ -2,6 +2,7 @@ package com.AlbertoMrMekko.resat.view;
 
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
 import com.AlbertoMrMekko.resat.service.AuthenticationService;
+import com.AlbertoMrMekko.resat.service.NotificationService;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,25 +12,33 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthenticationView
 {
+    @Getter
+    private boolean authenticated;
+
     private final SelectedEmployeeManager selectedEmployeeManager;
 
     private final AuthenticationService authenticationService;
 
+    private final NotificationService notificationService;
+
     public AuthenticationView(final SelectedEmployeeManager selectedEmployeeManager,
-                              final AuthenticationService authenticationService)
+                              final AuthenticationService authenticationService,
+                              final NotificationService notificationService)
     {
         this.selectedEmployeeManager = selectedEmployeeManager;
         this.authenticationService = authenticationService;
+        this.notificationService = notificationService;
     }
 
     public void show()
     {
+        this.authenticated = false;
         Stage authenticationStage = new Stage();
         authenticationStage.initModality(Modality.APPLICATION_MODAL);
 
@@ -41,14 +50,7 @@ public class AuthenticationView
         Label text = new Label("Introduce tu contraseña para validar la acción");
         PasswordField passwordField = new PasswordField();
         passwordField.setOnAction(event -> {
-            if (this.authenticationService.validatePassword(passwordField.getText(), this.selectedEmployeeManager.getSelectedEmployee().getPassword()))
-            {
-                System.out.println("Accion validada, continuar");
-            }
-            else
-            {
-                System.out.println("Mostrar mensaje contraseña errónea");
-            }
+            handleAuthentication(passwordField, authenticationStage);
         });
 
         content.getChildren().addAll(text, passwordField);
@@ -57,14 +59,14 @@ public class AuthenticationView
 
         Button back = new Button("Atrás");
         back.setOnAction(event -> {
+            authenticated = false;
             authenticationStage.close();
         });
 
         Button accept = new Button("Aceptar");
 
-        // TODO código duplicado, crear método para unificar acción con botón Aceptar y pulsar Enter
         accept.setOnAction(event -> {
-            System.out.println("Hacer lo mismo que en passwordField.setOnAction");
+            handleAuthentication(passwordField, authenticationStage);
         });
 
         buttons.getChildren().addAll(back, accept);
@@ -76,6 +78,24 @@ public class AuthenticationView
 
         authenticationStage.setTitle("RESAT");
         authenticationStage.setScene(scene);
-        authenticationStage.show();
+        authenticationStage.showAndWait();
+    }
+
+    private void handleAuthentication(PasswordField passwordField, Stage authenticationStage)
+    {
+        boolean correctPassword = this.authenticationService.validatePassword(passwordField.getText(),
+                this.selectedEmployeeManager.getSelectedEmployee().getPassword());
+        if (correctPassword)
+        {
+            authenticated = true;
+            authenticationStage.close();
+        }
+        else
+        {
+            this.notificationService.showErrorAlert("Error de autenticación", "La contraseña introducida no es " +
+                    "correcta");
+            passwordField.clear();
+            passwordField.requestFocus();
+        }
     }
 }
