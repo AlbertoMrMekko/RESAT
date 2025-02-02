@@ -1,6 +1,7 @@
 package com.AlbertoMrMekko.resat.service;
 
 import com.AlbertoMrMekko.resat.model.Employee;
+import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -169,6 +170,18 @@ public class FileManager
         } catch (IOException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void automaticRecord(EmployeeRecord record)
+    {
+        try (FileWriter writer = new FileWriter(recordsFile, true))
+        {
+            String line = String.format("%s,%s,%s\n", record.getEmployeeDni(), record.getAction(), record.getDatetime().toString());
+            writer.write(line);
+        } catch (IOException e)
+        {
+            System.err.println("Error al añadir nuevo registro a registros.csv: " + e.getMessage());
         }
     }
 }

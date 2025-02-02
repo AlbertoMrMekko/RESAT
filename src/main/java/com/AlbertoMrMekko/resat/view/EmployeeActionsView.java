@@ -2,6 +2,8 @@ package com.AlbertoMrMekko.resat.view;
 
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
 import com.AlbertoMrMekko.resat.service.EmployeeService;
+import com.AlbertoMrMekko.resat.service.NotificationService;
+import com.AlbertoMrMekko.resat.service.RecordService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -22,13 +24,19 @@ public class EmployeeActionsView
 
     private final EmployeeService employeeService;
 
+    private final RecordService recordService;
+
+    private final NotificationService notificationService;
+
     public EmployeeActionsView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                               @Lazy final ViewManager viewManager, final EmployeeService employeeService)
+                               @Lazy final ViewManager viewManager, final EmployeeService employeeService, final RecordService recordService, final NotificationService notificationService)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;
         this.viewManager = viewManager;
         this.employeeService = employeeService;
+        this.recordService = recordService;
+        this.notificationService = notificationService;
     }
 
     public void show()
@@ -49,10 +57,14 @@ public class EmployeeActionsView
         String recordButtonText = this.selectedEmployeeManager.getSelectedEmployee().isOnline() ? "Salir" : "Entrar";
         Button recordButton = new Button(recordButtonText);
         recordButton.setOnAction(event -> {
-            System.out.println("Mostrar ventana de autenticación");
-            System.out.println("Registrar entrada/salida del empleado");
-            System.out.println("Actualizar barra lateral");
-            System.out.println("Actualizar acciones empleado");
+            boolean authenticated = this.viewManager.showAuthenticationView();
+            if (authenticated)
+            {
+                this.recordService.automaticRecord();
+                this.viewManager.showSidebarView();
+                this.viewManager.showEmployeeActionsView();
+                this.notificationService.showInfoAlert("Registro", "El registro se realizado con éxito");
+            }
         });
         recordButton.setPrefHeight(100);
         recordButton.setMaxWidth(Double.MAX_VALUE);
