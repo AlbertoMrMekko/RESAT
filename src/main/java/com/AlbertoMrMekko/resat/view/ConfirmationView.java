@@ -1,7 +1,6 @@
 package com.AlbertoMrMekko.resat.view;
 
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
-import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +10,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class ConfirmationView
@@ -31,10 +33,13 @@ public class ConfirmationView
         show("Eliminar empleado", "¿Está seguro de que deseas eliminar el empleado " + selectedEmployeeName + "?");
     }
 
-    public void showManualRecordConfirmationView(EmployeeRecord record)
+    public void showManualRecordConfirmationView(String action, LocalDateTime datetime)
     {
-        show("Registro manual", "Se registrará la " + record.getAction() + " para el día " + record.getDate() + " a " +
-                "las " + record.getTime());
+        String accion = action.equals("Entrar") ? "entrada" : "salida";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = datetime.format(formatter);
+        show("Registro manual", "Se registrará la " + accion + " para el día " + formattedDate + " a " +
+                "las " + datetime.toLocalTime());
     }
 
     private void show(String title, String text)

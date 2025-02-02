@@ -1,9 +1,10 @@
 package com.AlbertoMrMekko.resat.view;
 
-import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import javafx.scene.layout.BorderPane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class ViewManager
@@ -66,9 +67,10 @@ public class ViewManager
         return this.confirmationView.isConfirmation();
     }
 
-    public void showManualRecordConfirmationView(EmployeeRecord record)
+    public boolean showManualRecordConfirmationView(String action, LocalDateTime datetime)
     {
-        this.confirmationView.showManualRecordConfirmationView(record);
+        this.confirmationView.showManualRecordConfirmationView(action, datetime);
+        return this.confirmationView.isConfirmation();
     }
 
     public boolean showAuthenticationView()

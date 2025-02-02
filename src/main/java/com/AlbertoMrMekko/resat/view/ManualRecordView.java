@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Component
 public class ManualRecordView
@@ -79,8 +81,8 @@ public class ManualRecordView
 
         Label timeLabel = new Label("Hora: ");
         hourComboBox = new ComboBox<>(FXCollections.observableArrayList(generateHours()));
-        minuteComboBox = new ComboBox<>(FXCollections.observableArrayList(generateMinutes()));
         hourComboBox.setPromptText("Hora");
+        minuteComboBox = new ComboBox<>(FXCollections.observableArrayList(generateMinutes()));
         minuteComboBox.setPromptText("Minuto");
 
         Label actionLabel = new Label("Acción: ");
@@ -126,8 +128,6 @@ public class ManualRecordView
             this.viewManager.showEmployeeActionsView();
         });
         acceptButton.setOnAction(event -> {
-            String employeeDni = "";
-
             // TODO pasos para registro manual:
             //  1. obtener inputs
             //  2. verificar inputs
@@ -146,6 +146,17 @@ public class ManualRecordView
             ValidationResult validationResult = this.recordService.validateManualRecord(date, hour, minute, action);
             if (validationResult.valid())
             {
+                LocalDateTime datetime = LocalDateTime.of(date, LocalTime.of(Integer.parseInt(hour), Integer.parseInt(minute)));
+                boolean confirmation = this.viewManager.showManualRecordConfirmationView(action, datetime);
+                if (confirmation)
+                {
+                    boolean authenticated = this.viewManager.showAuthenticationView();
+                    if (authenticated)
+                    {
+                        this.recordService.manualRecord();
+                    }
+                }
+
                 // TODO => confirmacion, autenticacion, registro, actualizar barra lateral, mostrar acciones empleado
                 // this.recordService.manualRecord();
                 // this.viewManager.showSidebarView();

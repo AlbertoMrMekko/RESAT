@@ -60,8 +60,6 @@ public class EmployeeActionsView
         Button manualInputButton = new Button("Registro manual");
         manualInputButton.setOnAction(event -> {
             this.viewManager.showManualRecordView();
-            System.out.println("Tras rellenar formulario:" + "Mostrar ventana de autenticación " + "Registrar " +
-                    "entrada/salida del empleado" + "Actualizar barra lateral" + "Actualizar acciones empleado");
         });
         manualInputButton.setPrefHeight(100);
         manualInputButton.setMaxWidth(Double.MAX_VALUE);

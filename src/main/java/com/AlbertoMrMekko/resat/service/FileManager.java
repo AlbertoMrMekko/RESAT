@@ -27,7 +27,7 @@ public class FileManager
         this.employeesFile = new File(appDir, "empleados.csv");
 
         createDirectory(appDir);
-        createFile(recordsFile, "DNI,Acción,Día,Hora\n");
+        createFile(recordsFile, "DNI,Acción,Fecha\n");
         createFile(employeesFile, "Nombre,DNI,Contraseña\n");
     }
 
@@ -144,13 +144,12 @@ public class FileManager
         try (ReversedLinesFileReader reader = new ReversedLinesFileReader(recordsFile, StandardCharsets.UTF_8))
         {
             String line;
-            int i = 0;
             while (!dniSet.isEmpty() && (line = reader.readLine()) != null)
             {
                 CSVParser parser = CSVParser.parse(line, CSVFormat.DEFAULT);
                 CSVRecord record = parser.iterator().next();
 
-                if (record.size() == 4)
+                if (record.size() == 3)
                 {
                     String dni = record.get(0);
                     String action = record.get(1);
