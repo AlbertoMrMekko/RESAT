@@ -1,5 +1,6 @@
 package com.AlbertoMrMekko.resat.view;
 
+import com.AlbertoMrMekko.resat.exceptions.InvalidActionException;
 import com.AlbertoMrMekko.resat.service.NotificationService;
 import com.AlbertoMrMekko.resat.service.RecordService;
 import com.AlbertoMrMekko.resat.utils.ValidationResult;
@@ -146,22 +147,42 @@ public class ManualRecordView
             ValidationResult validationResult = this.recordService.validateManualRecord(date, hour, minute, action);
             if (validationResult.valid())
             {
-                LocalDateTime datetime = LocalDateTime.of(date, LocalTime.of(Integer.parseInt(hour), Integer.parseInt(minute)));
-                boolean confirmation = this.viewManager.showManualRecordConfirmationView(action, datetime);
+                LocalDateTime datetime = LocalDateTime.of(date, LocalTime.of(Integer.parseInt(hour),
+                        Integer.parseInt(minute)));
+                String actionRecord = action.equals("Entrar") ? "Entrada" : "Salida";
+                boolean confirmation = this.viewManager.showManualRecordConfirmationView(actionRecord, datetime);
                 if (confirmation)
                 {
                     boolean authenticated = this.viewManager.showAuthenticationView();
                     if (authenticated)
                     {
-                        this.recordService.manualRecord();
+                        try
+                        {
+                            this.recordService.manualRecord(actionRecord, datetime);
+                            this.viewManager.showSidebarView();
+                            this.viewManager.showEmployeeActionsView();
+                            this.notificationService.showInfoAlert("Registro", "El registro se realizado con éxito");
+                        } catch (InvalidActionException ex)
+                        {
+                            this.viewManager.showManualRecordView();
+                            String errorMsg;
+                            if (action.equals("Entrar"))
+                            {
+                                errorMsg = "Este error ocurre cuando intentas registrar tu entrada, pero tu acción " +
+                                        "anterior es también una entrada. Cada entrada debe estar precedida por una " +
+                                        "salida.";
+                            }
+                            else
+                            {
+                                errorMsg = "Este error ocurre cuando intentas registrar tu salida, pero tu acción " +
+                                        "anterior es también una salida. Cada salida debe estar precedida por una " +
+                                        "entrada.";
+                            }
+                            this.notificationService.showErrorAlert("Registro", "Error en el registro.\n" + errorMsg);
+                        }
+
                     }
                 }
-
-                // TODO => confirmacion, autenticacion, registro, actualizar barra lateral, mostrar acciones empleado
-                // this.recordService.manualRecord();
-                // this.viewManager.showSidebarView();
-                // this.viewManager.clearDynamicContent();
-                this.notificationService.showInfoAlert("Registro", "El registro se ha llevado a cabo con éxito");
             }
             else
             {

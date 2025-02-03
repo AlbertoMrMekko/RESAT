@@ -53,10 +53,10 @@ public class RecordService
         employee.setOnline(updatedStatus);
     }
 
-    public void manualRecord()
+    public void manualRecord(String action, LocalDateTime dateTime)
     {
-        // TODO es necesario verificar que la acción anterior es contraria a la nueva, para evitar entrada sin salida y viceversa
-        //  cuidado con el registro manual cuando el registro esté vacio para ese usuario. Si no hay registros el anterior cuenta como salida
-
+        String dni = this.selectedEmployeeManager.getSelectedEmployee().getDni();
+        EmployeeRecord record = new EmployeeRecord(dni, action, dateTime);
+        this.fileManager.manualRecord(record);
     }
 }

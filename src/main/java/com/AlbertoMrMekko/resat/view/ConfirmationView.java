@@ -35,10 +35,9 @@ public class ConfirmationView
 
     public void showManualRecordConfirmationView(String action, LocalDateTime datetime)
     {
-        String accion = action.equals("Entrar") ? "entrada" : "salida";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String formattedDate = datetime.format(formatter);
-        show("Registro manual", "Se registrará la " + accion + " para el día " + formattedDate + " a " +
+        show("Registro manual", "Se registrará la " + action + " para el día " + formattedDate + " a " +
                 "las " + datetime.toLocalTime());
     }
 
