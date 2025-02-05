@@ -27,4 +27,15 @@ public class NotificationService
 
         alert.showAndWait();
     }
+
+    public void showWarningAlert(String warningTitle, String warningMessage)
+    {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+
+        alert.setTitle("RESAT - Aviso");
+        alert.setHeaderText(warningTitle);
+        alert.setContentText(warningMessage);
+
+        alert.showAndWait();
+    }
 }

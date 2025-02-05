@@ -6,20 +6,26 @@ import lombok.Setter;
 @Getter
 public class Employee
 {
-    private String dni;
-
     private String name;
+
+    private String dni;
 
     private String password;
 
     @Setter
     private boolean isOnline;
 
-    public Employee(String dni, String name, String password, boolean isOnline)
+    public Employee(String name, String dni, String password, boolean isOnline)
     {
-        this.dni = dni;
         this.name = name;
+        this.dni = dni;
         this.password = password;
         this.isOnline = isOnline;
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%s,%s,%s\n", name, dni, password);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -58,36 +59,55 @@ public class FileManager
     public List<Employee> readEmployeesFromCsv()
     {
         List<Employee> employees = new ArrayList<>();
-        String line;
-        try (BufferedReader br = new BufferedReader(new FileReader(employeesFile.getAbsolutePath())))
+        try (BufferedReader reader = new BufferedReader(new FileReader(employeesFile)))
         {
             // Discard header
-            br.readLine();
+            reader.readLine();
 
-            while ((line = br.readLine()) != null)
+            String line;
+            while ((line = reader.readLine()) != null)
             {
-                String[] values = line.split(",");
-                if (values.length == 3)
-                {
-                    employees.add(new Employee(values[1], values[0], values[2], false));
-                }
+                String[] data = line.split(",");
+                employees.add(new Employee(data[0], data[1], data[2], false));
             }
         } catch (IOException e)
         {
-            System.err.println("Error al leer el archivo CSV: " + e.getMessage());
+            System.err.println("Error al cargar los empleados: " + e.getMessage());
         }
+
         return employees;
+    }
+
+    public List<EmployeeRecord> getRecords()
+    {
+        List<EmployeeRecord> records = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(recordsFile)))
+        {
+            // Discard header
+            reader.readLine();
+
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+                String[] data = line.split(",");
+                records.add(new EmployeeRecord(data[0], data[1], LocalDateTime.parse(data[2])));
+            }
+        } catch (IOException e)
+        {
+            System.err.println("Error al cargar los registros: " + e.getMessage());
+        }
+
+        return records;
     }
 
     public void addEmployee(Employee employee)
     {
         try (FileWriter writer = new FileWriter(employeesFile, true))
         {
-            String line = String.format("%s,%s,%s\n", employee.getName(), employee.getDni(), employee.getPassword());
-            writer.write(line);
+            writer.write(employee.toString());
         } catch (IOException e)
         {
-            System.err.println("Error al añadir empleado a empleados.csv: " + e.getMessage());
+            System.err.println("Error al añadir un nuevo empleado: " + e.getMessage());
         }
     }
 
@@ -96,10 +116,10 @@ public class FileManager
         try
         {
             List<String> lines = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader(employeesFile)))
+            try (BufferedReader reader = new BufferedReader(new FileReader(employeesFile)))
             {
                 String line;
-                while ((line = br.readLine()) != null)
+                while ((line = reader.readLine()) != null)
                 {
                     if (!line.split(",")[1].equals(dni))
                     {
@@ -107,12 +127,12 @@ public class FileManager
                     }
                 }
             }
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(employeesFile)))
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(employeesFile)))
             {
                 for (String line : lines)
                 {
-                    bw.write(line);
-                    bw.newLine();
+                    writer.write(line);
+                    writer.newLine();
                 }
             }
             System.out.println("Empleado con DNI " + dni + " eliminado");
@@ -165,23 +185,36 @@ public class FileManager
             {
                 dniStatusMap.put(remainingDni, "Salida");
             }
-
-            return dniStatusMap;
         } catch (IOException e)
         {
-            throw new RuntimeException(e);
+            System.err.println("Error al buscar el estado anterior del empleado: " + e.getMessage());
         }
+
+        return dniStatusMap;
     }
 
-    public void automaticRecord(EmployeeRecord record)
+    public void addRecord(EmployeeRecord record)
     {
         try (FileWriter writer = new FileWriter(recordsFile, true))
         {
-            String line = String.format("%s,%s,%s\n", record.getEmployeeDni(), record.getAction(), record.getDatetime().toString());
-            writer.write(line);
+            writer.write(record.toString());
         } catch (IOException e)
         {
-            System.err.println("Error al añadir nuevo registro a registros.csv: " + e.getMessage());
+            System.err.println("Error al añadir un nuevo registro: " + e.getMessage());
+        }
+    }
+
+    public void saveRecords(List<EmployeeRecord> records)
+    {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(recordsFile)))
+        {
+            for (EmployeeRecord record : records)
+            {
+                writer.write(record.toString());
+            }
+        } catch (IOException e)
+        {
+            System.err.println("Error al guardar los registros: " + e.getMessage());
         }
     }
 }

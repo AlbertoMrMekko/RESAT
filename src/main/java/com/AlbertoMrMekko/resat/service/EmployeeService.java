@@ -72,10 +72,10 @@ public class EmployeeService
         return new ValidationResult(true, null);
     }
 
-    public void createEmployee(String dni, String name, String password)
+    public void createEmployee(String name, String dni, String password)
     {
         String encodedPassword = this.authenticationService.encodePassword(password);
-        Employee employee = new Employee(dni, name, encodedPassword, false);
+        Employee employee = new Employee(name, dni, encodedPassword, false);
         this.fileManager.addEmployee(employee);
         this.employees.add(employee);
     }

@@ -142,7 +142,6 @@ public class ManualRecordView
             String minute = minuteComboBox.getValue() != null ? minuteComboBox.getValue() : null;
             RadioButton selectedAction = (RadioButton) actionGroup.getSelectedToggle();
             String action = selectedAction != null ? selectedAction.getText() : null;
-            System.out.println(date + " , " + hour + " , " + minute + " , " + action);
 
             ValidationResult validationResult = this.recordService.validateManualRecord(date, hour, minute, action);
             if (validationResult.valid())

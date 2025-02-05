@@ -126,7 +126,7 @@ public class CreateEmployeeView
                     password2);
             if (validationResult.valid())
             {
-                this.employeeService.createEmployee(dni, name, password);
+                this.employeeService.createEmployee(name, dni, password);
                 this.viewManager.showSidebarView();
                 this.viewManager.clearDynamicContent();
                 this.notificationService.showInfoAlert("Creación de empleado", "El empleado " + name + " se ha creado" +
