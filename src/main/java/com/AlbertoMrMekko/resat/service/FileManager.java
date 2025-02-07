@@ -1,5 +1,6 @@
 package com.AlbertoMrMekko.resat.service;
 
+import com.AlbertoMrMekko.resat.exceptions.ResatException;
 import com.AlbertoMrMekko.resat.model.Employee;
 import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import org.apache.commons.csv.CSVFormat;
@@ -52,6 +53,7 @@ public class FileManager
             } catch (IOException e)
             {
                 System.err.println("Error al crear el archivo " + file.getAbsolutePath() + ": " + e.getMessage());
+                throw new ResatException("Error al crear el archivo " + file.getAbsolutePath() + ": " + e.getMessage());
             }
         }
     }
@@ -73,6 +75,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al cargar los empleados: " + e.getMessage());
+            throw new ResatException("Error al cargar los empleados: " + e.getMessage());
         }
 
         return employees;
@@ -95,6 +98,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al cargar los registros: " + e.getMessage());
+            throw new ResatException("Error al cargar los registros: " + e.getMessage());
         }
 
         return records;
@@ -108,6 +112,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al añadir un nuevo empleado: " + e.getMessage());
+            throw new ResatException("Error al añadir un nuevo empleado: " + e.getMessage());
         }
     }
 
@@ -139,6 +144,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al eliminar empleado: " + e.getMessage());
+            throw new ResatException("Error al eliminar empleado: " + e.getMessage());
         }
     }
 
@@ -188,6 +194,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al buscar el estado anterior del empleado: " + e.getMessage());
+            throw new ResatException("Error al buscar el estado anterior del empleado: " + e.getMessage());
         }
 
         return dniStatusMap;
@@ -201,6 +208,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al añadir un nuevo registro: " + e.getMessage());
+            throw new ResatException("Error al añadir un nuevo registro: " + e.getMessage());
         }
     }
 
@@ -208,6 +216,7 @@ public class FileManager
     {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(recordsFile)))
         {
+            writer.write("DNI,Acción,Fecha\n");
             for (EmployeeRecord record : records)
             {
                 writer.write(record.toString());
@@ -215,6 +224,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al guardar los registros: " + e.getMessage());
+            throw new ResatException("Error al guardar los registros: " + e.getMessage());
         }
     }
 }

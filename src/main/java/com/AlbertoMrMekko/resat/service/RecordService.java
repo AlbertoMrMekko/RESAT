@@ -1,6 +1,7 @@
 package com.AlbertoMrMekko.resat.service;
 
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
+import com.AlbertoMrMekko.resat.exceptions.ResatException;
 import com.AlbertoMrMekko.resat.model.Employee;
 import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import com.AlbertoMrMekko.resat.utils.ValidationResult;
@@ -38,7 +39,6 @@ public class RecordService
         }
         LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.of(Integer.parseInt(hour),
                 Integer.parseInt(minute)));
-        System.out.println(localDateTime);
         if (localDateTime.isAfter(LocalDateTime.now()))
         {
             return new ValidationResult(false, "La fecha no debe ser posterior a la fecha actual");
@@ -78,7 +78,8 @@ public class RecordService
             {
                 if (record.getDatetime().equals(dateTime) && record.getEmployeeDni().equals(dni))
                 {
-                    // ERROR
+                    System.err.println("Ya existe un registro para ese empleado con esa fecha");
+                    throw new ResatException("Ya existe un registro para ese empleado con esa fecha");
                 }
                 else
                 {
@@ -91,12 +92,16 @@ public class RecordService
                 {
                     previousStatus = records.get(i).getAction();
                 }
+                i++;
             }
-            i++;
         }
         if (previousStatus.equals(action))
         {
-            // ERROR
+            String oppositeAction = action.equals("Entrada") ? "Salida" : "Entrada";
+            String errorMsg = "Este error ocurre cuando intentas registrar tu " + action + ", pero tu acción anterior" +
+                    " es también una " + action + ".\nCada " + action + " debe estar precedida por una " + oppositeAction;
+            System.err.println(errorMsg);
+            throw new ResatException(errorMsg);
         }
         records.add(i, new EmployeeRecord(dni, action, dateTime));
 
@@ -112,6 +117,10 @@ public class RecordService
                 nextStatus = record.getAction();
                 nextDateTime = LocalDateTime.parse(record.getDatetime().toString());
                 notFound = false;
+            }
+            else
+            {
+                i++;
             }
         }
         if (notFound)
@@ -129,9 +138,9 @@ public class RecordService
                 String warningMessage;
                 if (action.equals("Entrada"))
                 {
-                    warningMessage = "Tras añadir la entrada, ha quedado una inconsistencia temporal. Esto ocurre " +
-                            "cuando " + "no existe un registro de salida entre la nueva entrada y la siguiente. Para "
-                            + "solucionarla, debes añadir un registro de salida con una fecha posterior a " + previousDate + " y " + "anterior a " + nextDate;
+                    warningMessage =
+                            "Tras añadir la entrada, ha quedado una inconsistencia temporal. Esto ocurre " + "cuando "
+                                    + "no existe un registro de salida entre la nueva entrada y la siguiente. Para " + "solucionarla, debes añadir un registro de salida con una fecha posterior a " + previousDate + " y " + "anterior a " + nextDate;
                 }
                 else
                 {

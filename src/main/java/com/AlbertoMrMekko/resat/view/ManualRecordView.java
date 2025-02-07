@@ -1,6 +1,6 @@
 package com.AlbertoMrMekko.resat.view;
 
-import com.AlbertoMrMekko.resat.exceptions.InvalidActionException;
+import com.AlbertoMrMekko.resat.exceptions.ResatException;
 import com.AlbertoMrMekko.resat.service.NotificationService;
 import com.AlbertoMrMekko.resat.service.RecordService;
 import com.AlbertoMrMekko.resat.utils.ValidationResult;
@@ -161,25 +161,11 @@ public class ManualRecordView
                             this.viewManager.showSidebarView();
                             this.viewManager.showEmployeeActionsView();
                             this.notificationService.showInfoAlert("Registro", "El registro se realizado con éxito");
-                        } catch (InvalidActionException ex)
+                        } catch (ResatException ex)
                         {
                             this.viewManager.showManualRecordView();
-                            String errorMsg;
-                            if (action.equals("Entrar"))
-                            {
-                                errorMsg = "Este error ocurre cuando intentas registrar tu entrada, pero tu acción " +
-                                        "anterior es también una entrada. Cada entrada debe estar precedida por una " +
-                                        "salida.";
-                            }
-                            else
-                            {
-                                errorMsg = "Este error ocurre cuando intentas registrar tu salida, pero tu acción " +
-                                        "anterior es también una salida. Cada salida debe estar precedida por una " +
-                                        "entrada.";
-                            }
-                            this.notificationService.showErrorAlert("Registro", "Error en el registro.\n" + errorMsg);
+                            this.notificationService.showErrorAlert("Registro", "Error en el registro.\n" + ex.getErrorMessage());
                         }
-
                     }
                 }
             }
