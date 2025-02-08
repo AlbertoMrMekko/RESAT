@@ -85,15 +85,11 @@ public class EmployeeService
         boolean confirmation = this.viewManager.showDeleteEmployeeConfirmationView();
         if (confirmation)
         {
-            boolean authenticated = this.viewManager.showAuthenticationView();
-            if (authenticated)
-            {
-                this.employees.remove(employee);
-                this.fileManager.deleteEmployee(employee.getDni());
-                this.viewManager.clearDynamicContent();
-                this.viewManager.showSidebarView();
-                this.notificationService.showInfoAlert("Empleado eliminado", "El empleado se ha eliminado con éxito");
-            }
+            this.employees.remove(employee);
+            this.fileManager.deleteEmployee(employee.getDni());
+            this.viewManager.clearDynamicContent();
+            this.viewManager.showSidebarView();
+            this.notificationService.showInfoAlert("Empleado eliminado", "El empleado se ha eliminado con éxito");
         }
     }
 }
