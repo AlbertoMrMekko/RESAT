@@ -38,4 +38,13 @@ public class NotificationService
 
         alert.showAndWait();
     }
+
+    public void showCriticalErrorAlert(String errorMessage)
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage);
+        alert.setTitle("RESAT - Error crítico");
+        alert.setHeaderText("Error crítico");
+        alert.showAndWait();
+        System.exit(1);
+    }
 }

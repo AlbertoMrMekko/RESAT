@@ -23,8 +23,12 @@ public class FileManager
 
     private final File employeesFile;
 
-    public FileManager()
+    private final NotificationService notificationService;
+
+    public FileManager(final NotificationService notificationService)
     {
+        this.notificationService = notificationService;
+
         this.appDir = new File(System.getenv("LOCALAPPDATA"), "RESAT");
         this.recordsFile = new File(appDir, "registros.csv");
         this.employeesFile = new File(appDir, "empleados.csv");
@@ -53,7 +57,7 @@ public class FileManager
             } catch (IOException e)
             {
                 System.err.println("Error al crear el archivo " + file.getAbsolutePath() + ": " + e.getMessage());
-                throw new ResatException("Error al crear el archivo " + file.getAbsolutePath() + ": " + e.getMessage());
+                this.notificationService.showCriticalErrorAlert("Error al crear el archivo " + file.getAbsolutePath() + ": " + e.getMessage());
             }
         }
     }
@@ -75,7 +79,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al cargar los empleados: " + e.getMessage());
-            throw new ResatException("Error al cargar los empleados: " + e.getMessage());
+            this.notificationService.showCriticalErrorAlert("Error al cargar los empleados: " + e.getMessage());
         }
 
         return employees;
@@ -194,7 +198,7 @@ public class FileManager
         } catch (IOException e)
         {
             System.err.println("Error al buscar el estado anterior del empleado: " + e.getMessage());
-            throw new ResatException("Error al buscar el estado anterior del empleado: " + e.getMessage());
+            this.notificationService.showCriticalErrorAlert("Error al buscar el estado anterior del empleado: " + e.getMessage());
         }
 
         return dniStatusMap;

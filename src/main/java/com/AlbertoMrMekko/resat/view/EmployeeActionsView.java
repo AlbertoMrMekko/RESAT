@@ -1,6 +1,7 @@
 package com.AlbertoMrMekko.resat.view;
 
 import com.AlbertoMrMekko.resat.SelectedEmployeeManager;
+import com.AlbertoMrMekko.resat.exceptions.ResatException;
 import com.AlbertoMrMekko.resat.service.EmployeeService;
 import com.AlbertoMrMekko.resat.service.NotificationService;
 import com.AlbertoMrMekko.resat.service.RecordService;
@@ -96,7 +97,21 @@ public class EmployeeActionsView
         deleteEmployeePane.setAlignment(Pos.TOP_RIGHT);
         Button deleteEmployeeButton = new Button("Eliminar empleado");
         deleteEmployeeButton.setOnAction(event -> {
-            this.employeeService.deleteEmployee(selectedEmployeeManager.getSelectedEmployee());
+            boolean confirmation = this.viewManager.showDeleteEmployeeConfirmationView();
+            if (confirmation)
+            {
+                try
+                {
+                    this.employeeService.deleteEmployee(selectedEmployeeManager.getSelectedEmployee());
+                    this.viewManager.clearDynamicContent();
+                    this.viewManager.showSidebarView();
+                    this.notificationService.showInfoAlert("Empleado eliminado", "El empleado se ha eliminado con éxito");
+                } catch (ResatException ex)
+                {
+                    this.viewManager.showEmployeeActionsView();
+                    this.notificationService.showErrorAlert("Eliminar empleado", "Error al eliminar el empleado: \n" + ex.getErrorMessage());
+                }
+            }
         });
         deleteEmployeeButton.setPrefSize(150, 40);
 

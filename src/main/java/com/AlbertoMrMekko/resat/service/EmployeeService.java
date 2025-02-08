@@ -22,17 +22,14 @@ public class EmployeeService
 
     private final ViewManager viewManager;
 
-    private final NotificationService notificationService;
-
     @Autowired
     public EmployeeService(final FileManager fileManager, final AuthenticationService authenticationService,
-                           @Lazy final ViewManager viewManager, final NotificationService notificationService)
+                           @Lazy final ViewManager viewManager)
     {
         this.fileManager = fileManager;
         this.employees = loadEmployees();
         this.authenticationService = authenticationService;
         this.viewManager = viewManager;
-        this.notificationService = notificationService;
     }
 
     private List<Employee> loadEmployees()
@@ -82,14 +79,7 @@ public class EmployeeService
 
     public void deleteEmployee(Employee employee)
     {
-        boolean confirmation = this.viewManager.showDeleteEmployeeConfirmationView();
-        if (confirmation)
-        {
-            this.employees.remove(employee);
-            this.fileManager.deleteEmployee(employee.getDni());
-            this.viewManager.clearDynamicContent();
-            this.viewManager.showSidebarView();
-            this.notificationService.showInfoAlert("Empleado eliminado", "El empleado se ha eliminado con éxito");
-        }
+        this.fileManager.deleteEmployee(employee.getDni());
+        this.employees.remove(employee);
     }
 }

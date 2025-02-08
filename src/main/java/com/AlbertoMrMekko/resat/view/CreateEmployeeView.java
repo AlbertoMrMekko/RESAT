@@ -1,5 +1,6 @@
 package com.AlbertoMrMekko.resat.view;
 
+import com.AlbertoMrMekko.resat.exceptions.ResatException;
 import com.AlbertoMrMekko.resat.service.EmployeeService;
 import com.AlbertoMrMekko.resat.service.NotificationService;
 import com.AlbertoMrMekko.resat.utils.ValidationResult;
@@ -30,8 +31,7 @@ public class CreateEmployeeView
     private PasswordField password2Field;
 
     public CreateEmployeeView(final BorderPane root, @Lazy final ViewManager viewManager,
-                              final EmployeeService employeeService,
-                              final NotificationService notificationService)
+                              final EmployeeService employeeService, final NotificationService notificationService)
     {
         this.root = root;
         this.viewManager = viewManager;
@@ -126,11 +126,20 @@ public class CreateEmployeeView
                     password2);
             if (validationResult.valid())
             {
-                this.employeeService.createEmployee(name, dni, password);
-                this.viewManager.showSidebarView();
-                this.viewManager.clearDynamicContent();
-                this.notificationService.showInfoAlert("Creación de empleado", "El empleado " + name + " se ha creado" +
-                        " correctamente");
+                try
+                {
+                    this.employeeService.createEmployee(name, dni, password);
+                    this.viewManager.showSidebarView();
+                    this.viewManager.clearDynamicContent();
+                    this.notificationService.showInfoAlert("Creación de empleado",
+                            "El empleado " + name + " se ha " + "creado correctamente");
+                } catch (ResatException ex)
+                {
+                    this.viewManager.showCreateEmployeeView();
+                    this.notificationService.showErrorAlert("Registro",
+                            "Error en el registro.\n" + ex.getErrorMessage());
+                }
+
             }
             else
             {
