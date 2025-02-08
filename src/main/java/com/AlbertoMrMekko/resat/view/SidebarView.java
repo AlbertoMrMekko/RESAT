@@ -100,7 +100,6 @@ public class SidebarView
         Button addButton = new Button("+");
         addButton.setOnAction(event -> {
             selectedEmployeeManager.setSelectedEmployee(null);
-            //clearDynamicContent(root);
             this.show();
             this.viewManager.showCreateEmployeeView();
         });

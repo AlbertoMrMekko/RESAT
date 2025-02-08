@@ -114,9 +114,7 @@ public class CreateEmployeeView
         HBox.setHgrow(createEmployeeButton, Priority.ALWAYS);
         buttons.getChildren().addAll(cancelButton, createEmployeeButton);
 
-        cancelButton.setOnAction(event -> {
-            this.viewManager.clearDynamicContent();
-        });
+        cancelButton.setOnAction(event -> this.viewManager.clearDynamicContent());
         createEmployeeButton.setOnAction(event -> {
             String name = nameField.getText();
             String dni = dniField.getText();

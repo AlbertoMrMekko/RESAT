@@ -49,9 +49,7 @@ public class AuthenticationView
         VBox content = new VBox(10);
         Label text = new Label("Introduce tu contraseña para validar la acción");
         PasswordField passwordField = new PasswordField();
-        passwordField.setOnAction(event -> {
-            handleAuthentication(passwordField, authenticationStage);
-        });
+        passwordField.setOnAction(event -> handleAuthentication(passwordField, authenticationStage));
 
         content.getChildren().addAll(text, passwordField);
 
@@ -65,9 +63,7 @@ public class AuthenticationView
 
         Button accept = new Button("Aceptar");
 
-        accept.setOnAction(event -> {
-            handleAuthentication(passwordField, authenticationStage);
-        });
+        accept.setOnAction(event -> handleAuthentication(passwordField, authenticationStage));
 
         buttons.getChildren().addAll(back, accept);
 

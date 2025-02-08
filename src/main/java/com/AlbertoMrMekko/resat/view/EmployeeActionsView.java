@@ -71,9 +71,7 @@ public class EmployeeActionsView
         recordButton.setMaxWidth(Double.MAX_VALUE);
 
         Button manualInputButton = new Button("Registro manual");
-        manualInputButton.setOnAction(event -> {
-            this.viewManager.showManualRecordView();
-        });
+        manualInputButton.setOnAction(event -> this.viewManager.showManualRecordView());
         manualInputButton.setPrefHeight(100);
         manualInputButton.setMaxWidth(Double.MAX_VALUE);
 

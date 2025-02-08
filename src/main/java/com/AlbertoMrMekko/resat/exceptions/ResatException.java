@@ -2,10 +2,10 @@ package com.AlbertoMrMekko.resat.exceptions;
 
 import lombok.Getter;
 
+@Getter
 public class ResatException extends RuntimeException
 {
-    @Getter
-    private String errorMessage;
+    private final String errorMessage;
 
     public ResatException(String errorMessage)
     {
