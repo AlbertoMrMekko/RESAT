@@ -132,6 +132,11 @@ public class RecordService
         {
             if (nextStatus.equals(action))
             {
+                // if next date is not of the same date, change to the same day at 23:59
+                if (!dateTime.toLocalDate().isEqual(nextDateTime.toLocalDate()))
+                {
+                    nextDateTime = LocalDateTime.of(dateTime.toLocalDate(), LocalTime.of(23, 59));
+                }
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                 String previousDate = dateTime.format(formatter);
                 String nextDate = nextDateTime.format(formatter);
