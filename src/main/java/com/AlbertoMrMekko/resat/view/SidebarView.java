@@ -81,7 +81,6 @@ public class SidebarView
 
         row.setOnMouseClicked(event -> {
             selectedEmployeeManager.setSelectedEmployee(employee);
-            //clearDynamicContent(root);
             this.show();
             this.viewManager.showEmployeeActionsView();
         });

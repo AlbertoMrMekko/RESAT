@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Service
@@ -81,5 +82,12 @@ public class EmployeeService
     {
         this.fileManager.deleteEmployee(employee.getDni());
         this.employees.remove(employee);
+    }
+
+    public List<Employee> getOnlineEmployees()
+    {
+        return employees.stream()
+                .filter(Employee::isOnline)
+                .collect(Collectors.toList());
     }
 }

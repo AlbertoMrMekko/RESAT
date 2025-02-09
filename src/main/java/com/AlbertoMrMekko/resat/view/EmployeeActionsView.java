@@ -61,10 +61,17 @@ public class EmployeeActionsView
             boolean authenticated = this.viewManager.showAuthenticationView();
             if (authenticated)
             {
-                this.recordService.automaticRecord();
-                this.viewManager.showSidebarView();
-                this.viewManager.showEmployeeActionsView();
-                this.notificationService.showInfoAlert("Registro", "El registro se realizado con éxito");
+                try
+                {
+                    this.recordService.automaticRecord();
+                    this.viewManager.showSidebarView();
+                    this.viewManager.showEmployeeActionsView();
+                    this.notificationService.showInfoAlert("Registro", "El registro se realizado con éxito");
+                } catch (ResatException ex)
+                {
+                    this.viewManager.showEmployeeActionsView();
+                    this.notificationService.showErrorAlert("Registro", "Error en el registro.\n" + ex.getErrorMessage());
+                }
             }
         });
         recordButton.setPrefHeight(100);
