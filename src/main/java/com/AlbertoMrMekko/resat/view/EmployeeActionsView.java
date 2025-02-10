@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.Objects;
 
 @Component
 public class EmployeeActionsView
@@ -155,14 +156,7 @@ public class EmployeeActionsView
 
         Stage folderStage = new Stage();
         File selectedFolder = directoryChooser.showDialog(folderStage);
-        if (selectedFolder != null)
-        {
-            return selectedFolder;
-        }
-        else
-        {
-            return defaultFolder();
-        }
+        return Objects.requireNonNullElseGet(selectedFolder, this::defaultFolder);
     }
 
     private File defaultFolder()
