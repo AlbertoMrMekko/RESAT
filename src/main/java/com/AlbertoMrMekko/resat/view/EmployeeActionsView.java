@@ -128,6 +128,10 @@ public class EmployeeActionsView
             {
                 try
                 {
+                    if (selectedEmployeeManager.getSelectedEmployee().isOnline())
+                    {
+                        this.recordService.automaticRecord();
+                    }
                     this.employeeService.deleteEmployee(selectedEmployeeManager.getSelectedEmployee());
                     this.viewManager.clearDynamicContent();
                     this.viewManager.showSidebarView();
