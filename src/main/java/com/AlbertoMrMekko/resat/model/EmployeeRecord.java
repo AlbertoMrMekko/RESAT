@@ -1,25 +1,9 @@
 package com.AlbertoMrMekko.resat.model;
 
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 
-@Getter
-public class EmployeeRecord
+public record EmployeeRecord(String employeeDni, String action, LocalDateTime datetime)
 {
-    private String employeeDni;
-
-    private String action;
-
-    private LocalDateTime datetime;
-
-    public EmployeeRecord(String employeeDni, String action, LocalDateTime datetime)
-    {
-        this.employeeDni = employeeDni;
-        this.action = action;
-        this.datetime = datetime;
-    }
-
     @Override
     public String toString()
     {

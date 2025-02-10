@@ -11,8 +11,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 @Component
 public class EmployeeActionsView
@@ -30,7 +34,8 @@ public class EmployeeActionsView
     private final NotificationService notificationService;
 
     public EmployeeActionsView(final BorderPane root, final SelectedEmployeeManager selectedEmployeeManager,
-                               @Lazy final ViewManager viewManager, final EmployeeService employeeService, final RecordService recordService, final NotificationService notificationService)
+                               @Lazy final ViewManager viewManager, final EmployeeService employeeService,
+                               final RecordService recordService, final NotificationService notificationService)
     {
         this.root = root;
         this.selectedEmployeeManager = selectedEmployeeManager;
@@ -70,7 +75,8 @@ public class EmployeeActionsView
                 } catch (ResatException ex)
                 {
                     this.viewManager.showEmployeeActionsView();
-                    this.notificationService.showErrorAlert("Registro", "Error en el registro.\n" + ex.getErrorMessage());
+                    this.notificationService.showErrorAlert("Registro",
+                            "Error en el registro.\n" + ex.getErrorMessage());
                 }
             }
         });
@@ -84,8 +90,22 @@ public class EmployeeActionsView
 
         Button downloadRecordsButton = new Button("Descargar registro");
         downloadRecordsButton.setOnAction(event -> {
-            System.out.println("Mostrar ventana de autenticación");
-            System.out.println("Descargar el registro completo (y guardarlo en descargas o pedir path??)");
+            boolean authenticated = this.viewManager.showAuthenticationView();
+            if (authenticated)
+            {
+                try
+                {
+                    File selectedFolder = selectFolder();
+                    File outputFile = new File(selectedFolder, "registroTotal.csv");
+                    this.recordService.downloadRecords(outputFile);
+                    this.notificationService.showInfoAlert("Descarga de registros", "La descarga se ha realizado con " +
+                            "éxito. Puedes encontrar el archivo en " + outputFile);
+                } catch (ResatException ex)
+                {
+                    this.notificationService.showErrorAlert("Descarga de registros", "Error en la descarga de " +
+                            "registros.\n" + ex.getErrorMessage());
+                }
+            }
         });
 
         downloadRecordsButton.setPrefHeight(100);
@@ -110,11 +130,13 @@ public class EmployeeActionsView
                     this.employeeService.deleteEmployee(selectedEmployeeManager.getSelectedEmployee());
                     this.viewManager.clearDynamicContent();
                     this.viewManager.showSidebarView();
-                    this.notificationService.showInfoAlert("Empleado eliminado", "El empleado se ha eliminado con éxito");
+                    this.notificationService.showInfoAlert("Empleado eliminado", "El empleado se ha eliminado con " +
+                            "éxito");
                 } catch (ResatException ex)
                 {
                     this.viewManager.showEmployeeActionsView();
-                    this.notificationService.showErrorAlert("Eliminar empleado", "Error al eliminar el empleado: \n" + ex.getErrorMessage());
+                    this.notificationService.showErrorAlert("Eliminar empleado",
+                            "Error al eliminar el empleado: \n" + ex.getErrorMessage());
                 }
             }
         });
@@ -124,5 +146,27 @@ public class EmployeeActionsView
         BorderPane.setMargin(deleteEmployeePane, new Insets(10));
 
         return deleteEmployeePane;
+    }
+
+    private File selectFolder()
+    {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Seleccionar carpeta de destino");
+
+        Stage folderStage = new Stage();
+        File selectedFolder = directoryChooser.showDialog(folderStage);
+        if (selectedFolder != null)
+        {
+            return selectedFolder;
+        }
+        else
+        {
+            return defaultFolder();
+        }
+    }
+
+    private File defaultFolder()
+    {
+        return new File(System.getenv("LOCALAPPDATA"), "RESAT");
     }
 }

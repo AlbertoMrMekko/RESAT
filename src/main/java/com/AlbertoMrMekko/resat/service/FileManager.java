@@ -1,6 +1,7 @@
 package com.AlbertoMrMekko.resat.service;
 
 import com.AlbertoMrMekko.resat.exceptions.ResatException;
+import com.AlbertoMrMekko.resat.model.DailyEmployeeRecord;
 import com.AlbertoMrMekko.resat.model.Employee;
 import com.AlbertoMrMekko.resat.model.EmployeeRecord;
 import org.apache.commons.csv.CSVFormat;
@@ -229,6 +230,22 @@ public class FileManager
         {
             System.err.println("Error al guardar los registros: " + e.getMessage());
             throw new ResatException("Error al guardar los registros: " + e.getMessage());
+        }
+    }
+
+    public void downloadRecords(List<DailyEmployeeRecord> records, File outputFile)
+    {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile)))
+        {
+            writer.write("DNI,Día,Horas\n");
+            for (DailyEmployeeRecord record : records)
+            {
+                writer.write(record.toString());
+            }
+        } catch (IOException e)
+        {
+            System.err.println("Error al descargar los registros: " + e.getMessage());
+            throw new ResatException("Error al descargar los registros: " + e.getMessage());
         }
     }
 }

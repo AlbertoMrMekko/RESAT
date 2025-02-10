@@ -28,7 +28,9 @@ public class EmployeeSchedulerService
     private final SelectedEmployeeManager selectedEmployeeManager;
 
     public EmployeeSchedulerService(final EmployeeService employeeService, final FileManager fileManager,
-                                    final NotificationService notificationService, @Lazy final ViewManager viewManager, final SelectedEmployeeManager selectedEmployeeManager)
+                                    final NotificationService notificationService,
+                                    @Lazy final ViewManager viewManager,
+                                    final SelectedEmployeeManager selectedEmployeeManager)
     {
         this.employeeService = employeeService;
         this.fileManager = fileManager;
@@ -42,8 +44,6 @@ public class EmployeeSchedulerService
      */
     @Scheduled(cron = "0 0 14,20 * * MON-FRI")
     @Scheduled(cron = "0 0 13 * * SAT")
-    // fixme TESTING SCHEDULER (segundo minuto hora * * *)
-    @Scheduled(cron = "0 31 16 * * *")
     public void scheduledExit()
     {
         List<Employee> onlineEmployees = employeeService.getOnlineEmployees();
@@ -62,8 +62,8 @@ public class EmployeeSchedulerService
                     this.selectedEmployeeManager.setSelectedEmployee(null);
                     this.viewManager.clearDynamicContent();
                     this.viewManager.showSidebarView();
-                    this.notificationService.showInfoAlert("Registro", "El registro programado se ha realizado con " +
-                            "éxito");
+                    this.notificationService.showInfoAlert("Registro",
+                            "El registro programado se ha realizado con " + "éxito");
                 });
             } catch (ResatException ex)
             {
