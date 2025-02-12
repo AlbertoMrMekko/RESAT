@@ -4,6 +4,8 @@ import com.AlbertoMrMekko.resat.exceptions.ResatException;
 import com.AlbertoMrMekko.resat.model.DailyEmployeeRecord;
 import com.AlbertoMrMekko.resat.model.Employee;
 import com.AlbertoMrMekko.resat.model.EmployeeRecord;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -18,6 +20,8 @@ import java.util.*;
 @Service
 public class FileManager
 {
+    private final String SCHEDULED_EXIT_HOURS_PATH = "scheduledExitHours.json";
+
     private final File appDir;
 
     private final File recordsFile;
@@ -153,56 +157,45 @@ public class FileManager
         }
     }
 
-    public void initEmployeesStatus(List<Employee> employees)
+    public Map<String, EmployeeRecord> getLatestEmployeeRecord(List<Employee> employees)
     {
         Set<String> dniSet = new HashSet<>();
         for (Employee e : employees)
         {
             dniSet.add(e.getDni());
         }
-        Map<String, String> dniStatusMap = findLatestStatus(dniSet);
-        String entrada = "Entrada";
-        for (Employee employee : employees)
-        {
-            String status = dniStatusMap.get(employee.getDni());
-            boolean online = entrada.equals(status);
-            employee.setOnline(online);
-        }
+        return findLatestEmployeeRecord(dniSet);
     }
 
-    private Map<String, String> findLatestStatus(Set<String> dniSet)
+    private Map<String, EmployeeRecord> findLatestEmployeeRecord(Set<String> dniSet)
     {
-        Map<String, String> dniStatusMap = new HashMap<>();
+        Map<String, EmployeeRecord> dniRecordMap = new HashMap<>();
         try (ReversedLinesFileReader reader = new ReversedLinesFileReader(recordsFile, StandardCharsets.UTF_8))
         {
             String line;
             while (!dniSet.isEmpty() && (line = reader.readLine()) != null)
             {
                 CSVParser parser = CSVParser.parse(line, CSVFormat.DEFAULT);
-                CSVRecord record = parser.iterator().next();
+                CSVRecord csvRecord = parser.iterator().next();
 
-                if (record.size() == 3)
+                if (csvRecord.size() == 3)
                 {
-                    String dni = record.get(0);
-                    String action = record.get(1);
+                    String dni = csvRecord.get(0);
                     if (dniSet.contains(dni))
                     {
-                        dniStatusMap.put(dni, action);
+                        String action = csvRecord.get(1);
+                        LocalDateTime dateTime = LocalDateTime.parse(csvRecord.get(2));
+                        dniRecordMap.put(dni, new EmployeeRecord(dni, action, dateTime));
                         dniSet.remove(dni);
                     }
                 }
-            }
-            for (String remainingDni : dniSet)
-            {
-                dniStatusMap.put(remainingDni, "Salida");
             }
         } catch (IOException e)
         {
             System.err.println("Error al buscar el estado anterior del empleado: " + e.getMessage());
             this.notificationService.showCriticalErrorAlert("Error al buscar el estado anterior del empleado: " + e.getMessage());
         }
-
-        return dniStatusMap;
+        return dniRecordMap;
     }
 
     public void addRecord(EmployeeRecord record)
@@ -246,6 +239,22 @@ public class FileManager
         {
             System.err.println("Error al descargar los registros: " + e.getMessage());
             throw new ResatException("Error al descargar los registros: " + e.getMessage());
+        }
+    }
+
+    public Map<String, List<String>> getScheduledExitHours()
+    {
+        try
+        {
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = FileManager.class.getResourceAsStream("/" + SCHEDULED_EXIT_HOURS_PATH);
+            return objectMapper.readValue(inputStream, new TypeReference<>()
+            {
+            });
+        } catch (IOException e)
+        {
+            System.err.println("Error al leer el archivo " + SCHEDULED_EXIT_HOURS_PATH + " : " + e.getMessage());
+            throw new ResatException("Error al leer el archivo " + SCHEDULED_EXIT_HOURS_PATH + " : " + e.getMessage());
         }
     }
 }

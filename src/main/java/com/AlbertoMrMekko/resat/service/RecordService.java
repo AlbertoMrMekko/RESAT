@@ -188,7 +188,7 @@ public class RecordService
     {
         for (Map.Entry<String, List<EmployeeRecord>> entry : records.entrySet())
         {
-            EmployeeRecord previousRecord = new EmployeeRecord(entry.getKey(), "Salida", null);
+            EmployeeRecord previousRecord = new EmployeeRecord(entry.getKey(), "Salida", LocalDateTime.MIN);
             for (EmployeeRecord record : entry.getValue())
             {
                 if (previousRecord.action().equals(record.action()))
@@ -207,11 +207,26 @@ public class RecordService
     private String buildInconsistencyMessage(EmployeeRecord previousRecord, EmployeeRecord nextRecord)
     {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        String previousDate = previousRecord.datetime() != null ? previousRecord.datetime().format(formatter) :
-                LocalDateTime.of(nextRecord.datetime().toLocalDate(), LocalTime.of(0, 0)).format(formatter);
-        String nextDate = nextRecord.datetime().format(formatter);
-        String oppositeAction = previousRecord.action().equals("Entrada") ? "Salida" : "Entrada";
+        String previousDate, nextDate;
 
+        if (previousRecord.datetime().toLocalDate().isEqual(nextRecord.datetime().toLocalDate()))
+        {
+            previousDate = previousRecord.datetime().format(formatter);
+            nextDate = nextRecord.datetime().format(formatter);
+        }
+        else if (previousRecord.action().equals("Entrada"))
+        {
+            previousDate = previousRecord.datetime().format(formatter);
+            nextDate =
+                    LocalDateTime.of(previousRecord.datetime().toLocalDate(), LocalTime.of(23, 59)).format(formatter);
+        }
+        else
+        {
+            previousDate = LocalDateTime.of(nextRecord.datetime().toLocalDate(), LocalTime.of(0, 0)).format(formatter);
+            nextDate = nextRecord.datetime().format(formatter);
+        }
+
+        String oppositeAction = previousRecord.action().equals("Entrada") ? "Salida" : "Entrada";
         return ("Inconsistencia encontrada para el empleado con DNI " + previousRecord.employeeDni() + ".\nDebe " +
                 "resolver la inconsistencia antes de poder descargar el registro.\nPara ello, debe crear un registro "
                 + "de " + oppositeAction + " entre las fechas " + previousDate + " y " + nextDate);
@@ -262,5 +277,62 @@ public class RecordService
             }
             return hours;
         }
+    }
+
+    public void initEmployeesStatus(List<Employee> employees)
+    {
+        Map<String, EmployeeRecord> lastEmployeeRecordMap = this.fileManager.getLatestEmployeeRecord(employees);
+        for (EmployeeRecord record : lastEmployeeRecordMap.values())
+        {
+            EmployeeRecord missingRecord = checkMissingScheduledRecord(record);
+            if (missingRecord != null)
+            {
+                this.fileManager.addRecord(missingRecord);
+            }
+            // status is false by default. Set to true if there's no missing record and last status was online
+            else if (record.action().equals("Entrada"))
+            {
+                employees.stream().filter(e -> e.getDni().equals(record.employeeDni())).findFirst().ifPresent(e -> e.setOnline(true));
+            }
+        }
+    }
+
+    /**
+     * Returns an EmployeeRecord if a scheduled record has been skipped, null otherwise
+     *
+     * @param record
+     *
+     * @return
+     */
+    private EmployeeRecord checkMissingScheduledRecord(EmployeeRecord record)
+    {
+        if (record.action().equals("Entrada"))
+        {
+            LocalDateTime previousDateTime = record.datetime();
+            LocalDateTime nextScheduledDateTime = getNextScheduledDateTime(previousDateTime);
+            if (LocalDateTime.now().isAfter(nextScheduledDateTime))
+            {
+                return new EmployeeRecord(record.employeeDni(), "Salida", nextScheduledDateTime);
+            }
+        }
+        return null;
+    }
+
+    private LocalDateTime getNextScheduledDateTime(LocalDateTime dateTime)
+    {
+        Map<String, List<String>> scheduledExitHours = this.fileManager.getScheduledExitHours();
+        String dayOfWeek = dateTime.getDayOfWeek().name();
+        List<String> hours = scheduledExitHours.getOrDefault(dayOfWeek, new ArrayList<>());
+        List<LocalTime> localTimeHours = hours.stream().map(LocalTime::parse).sorted().toList();
+        for (LocalTime hour : localTimeHours)
+        {
+            if (hour.isAfter(dateTime.toLocalTime()))
+            {
+                return dateTime.withHour(hour.getHour()).withMinute(hour.getMinute());
+            }
+        }
+
+        // if no scheduled exit hour is found, return 23:59 of the same input day
+        return dateTime.withHour(23).withMinute(59);
     }
 }

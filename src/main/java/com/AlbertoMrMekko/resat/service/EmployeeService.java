@@ -1,42 +1,40 @@
 package com.AlbertoMrMekko.resat.service;
 
 import com.AlbertoMrMekko.resat.utils.ValidationResult;
-import com.AlbertoMrMekko.resat.view.ViewManager;
-import lombok.Getter;
 import com.AlbertoMrMekko.resat.model.Employee;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
 @Service
 public class EmployeeService
 {
+    @Getter
     private List<Employee> employees;
 
     private final FileManager fileManager;
 
     private final AuthenticationService authenticationService;
 
-    private final ViewManager viewManager;
+    private final RecordService recordService;
 
     @Autowired
-    public EmployeeService(final FileManager fileManager, final AuthenticationService authenticationService,
-                           @Lazy final ViewManager viewManager)
+    public EmployeeService(final FileManager fileManager, final RecordService recordService,
+                           final AuthenticationService authenticationService)
     {
         this.fileManager = fileManager;
-        this.employees = loadEmployees();
+        this.recordService = recordService;
         this.authenticationService = authenticationService;
-        this.viewManager = viewManager;
+        this.employees = loadEmployees();
     }
 
     private List<Employee> loadEmployees()
     {
         List<Employee> employees = this.fileManager.readEmployeesFromCsv();
-        this.fileManager.initEmployeesStatus(employees);
+        this.recordService.initEmployeesStatus(employees);
         return employees;
     }
 
@@ -86,8 +84,6 @@ public class EmployeeService
 
     public List<Employee> getOnlineEmployees()
     {
-        return employees.stream()
-                .filter(Employee::isOnline)
-                .collect(Collectors.toList());
+        return employees.stream().filter(Employee::isOnline).collect(Collectors.toList());
     }
 }
