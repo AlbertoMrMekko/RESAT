@@ -53,8 +53,13 @@ public class ConfirmationView
 
         Label titleLabel = new Label(title);
         titleLabel.getStyleClass().add("emergent-window-title");
+        HBox titleBox = new HBox(titleLabel);
+        titleBox.getStyleClass().add("alignment-center");
+
         Label textLabel = new Label(text);
-        textLabel.getStyleClass().add("emergent-window-text");
+        textLabel.getStyleClass().add("emergent-window-text-2");
+        HBox textBox = new HBox(textLabel);
+        textBox.getStyleClass().add("alignment-center");
 
         Button cancel = new Button("Cancelar");
         cancel.getStyleClass().add("cancel-button");
@@ -73,8 +78,8 @@ public class ConfirmationView
         HBox buttons = new HBox(20, cancel, accept);
         buttons.getStyleClass().add("buttons-box");
 
-        rootNode.setTop(titleLabel);
-        rootNode.setCenter(textLabel);
+        rootNode.setTop(titleBox);
+        rootNode.setCenter(textBox);
         rootNode.setBottom(buttons);
         Scene scene = new Scene(rootNode, 400, 300);
 

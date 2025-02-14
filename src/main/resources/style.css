@@ -52,17 +52,52 @@
 }
 
 .emergent-window-title {
-    -fx-font-size: 20px;
+    -fx-font-size: 25px;
     -fx-font-weight: bold;
-    -fx-text-alignment: center;
-    -fx-alignment: center;
+    -fx-padding: 20px 0;
 }
 
 .emergent-window-text {
     -fx-font-size: 16px;
+    -fx-alignment: center;
+    -fx-padding: 10px 0px;
+}
+
+.emergent-window-text-2 {
+    -fx-font-size: 16px;
+    -fx-alignment: center;
+    -fx-padding: 10px 0px;
+    -fx-wrap-text: true;
+    -fx-max-width: 380px;
 }
 
 .buttons-box {
     -fx-alignment: center;
     -fx-padding: 0px 50px 20px 50px;
+}
+
+.password-field {
+    -fx-max-width: 250px;
+    -fx-alignment: center;
+}
+
+.alignment-center {
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}
+
+.text-field, .password-field {
+    -fx-pref-width: 200px;
+}
+
+.form-fields {
+    -fx-padding: 20px;
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
+    -fx-alignment: center;
+}
+
+.form-buttons {
+    -fx-alignment: center;
+    -fx-padding: 50px 50px 50px 50px;
 }

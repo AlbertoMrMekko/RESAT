@@ -71,22 +71,22 @@ public class CreateEmployeeView
 
         Label nameLabel = new Label("Nombre ");
         nameField = new TextField();
-        nameField.setPrefWidth(200);
+        nameField.getStyleClass().add("text-field");
         nameField.setPromptText("Ej. Daniel");
 
         Label dniLabel = new Label("DNI ");
         dniField = new TextField();
-        dniField.setPrefWidth(200);
+        dniField.getStyleClass().add("text-field");
         dniField.setPromptText("Ej. 12345678Z");
 
         Label password1Label = new Label("Contraseña: ");
         passwordField = new PasswordField();
-        passwordField.setPrefWidth(200);
+        passwordField.getStyleClass().add("password-field");
         passwordField.setPromptText("Introduce tu nueva contraseña");
 
         Label password2Label = new Label("Repetir contraseña: ");
         password2Field = new PasswordField();
-        password2Field.setPrefWidth(200);
+        password2Field.getStyleClass().add("password-field");
         password2Field.setPromptText("Repite la nueva contraseña");
 
         formFields.add(nameLabel, 0, 0);
@@ -103,11 +103,6 @@ public class CreateEmployeeView
 
     private HBox getFormButtons()
     {
-        HBox buttons = new HBox(10);
-        buttons.setPadding(new Insets(10));
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setSpacing(5);
-
         Button cancelButton = new Button("Cancelar");
         cancelButton.getStyleClass().add("cancel-button");
         cancelButton.setOnAction(event -> this.viewManager.clearDynamicContent());
@@ -137,20 +132,17 @@ public class CreateEmployeeView
                     this.notificationService.showErrorAlert("Registro",
                             "Error en el registro.\n" + ex.getErrorMessage());
                 }
-
             }
             else
             {
                 this.notificationService.showErrorAlert("Error en la creación de empleado",
                         validationResult.errorMsg());
             }
-
         });
 
-        buttons.getChildren().addAll(cancelButton, createEmployeeButton);
+        HBox buttons = new HBox(20, cancelButton, createEmployeeButton);
+        buttons.getStyleClass().add("form-buttons");
 
         return buttons;
     }
-
-
 }

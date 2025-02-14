@@ -49,11 +49,15 @@ public class AuthenticationView
 
         Label title = new Label("Identifícate");
         title.getStyleClass().add("emergent-window-title");
+        HBox titleBox = new HBox(title);
+        titleBox.getStyleClass().add("alignment-center");
 
         VBox content = new VBox(10);
+        content.getStyleClass().add("alignment-center");
         Label text = new Label("Introduce tu contraseña para validar la acción");
         text.getStyleClass().add("emergent-window-text");
         PasswordField passwordField = new PasswordField();
+        passwordField.getStyleClass().add("password-field");
         passwordField.setOnAction(event -> handleAuthentication(passwordField, authenticationStage));
 
         content.getChildren().addAll(text, passwordField);
@@ -72,7 +76,7 @@ public class AuthenticationView
         HBox buttons = new HBox(20, back, accept);
         buttons.getStyleClass().add("buttons-box");
 
-        rootNode.setTop(title);
+        rootNode.setTop(titleBox);
         rootNode.setCenter(content);
         rootNode.setBottom(buttons);
         Scene scene = new Scene(rootNode, 400, 300);

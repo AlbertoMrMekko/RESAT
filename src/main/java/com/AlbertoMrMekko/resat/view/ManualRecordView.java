@@ -69,14 +69,11 @@ public class ManualRecordView
     private GridPane getFormFields()
     {
         GridPane formFields = new GridPane();
-        formFields.setPadding(new Insets(20));
-        formFields.setHgap(10);
-        formFields.setVgap(10);
-        formFields.setAlignment(Pos.CENTER);
+        formFields.getStyleClass().add("form-fields");
 
         Label dateLabel = new Label("Día: ");
         dateField = new DatePicker();
-        dateField.setPrefWidth(200);
+        dateField.getStyleClass().add("text-field");
         dateField.getEditor().setDisable(true);
         dateField.getEditor().setOpacity(1);
 
@@ -95,11 +92,11 @@ public class ManualRecordView
         entryButton.getStyleClass().add("radio-button");
         exitButton.setToggleGroup(actionGroup);
 
-        HBox timeBox = new HBox();
+        HBox timeBox = new HBox(45);
         timeBox.getChildren().add(0, hourComboBox);
         timeBox.getChildren().add(1, minuteComboBox);
 
-        HBox actionBox = new HBox();
+        HBox actionBox = new HBox(45);
         actionBox.getChildren().add(0, entryButton);
         actionBox.getChildren().add(1, exitButton);
 
@@ -115,11 +112,6 @@ public class ManualRecordView
 
     private HBox getFormButtons()
     {
-        HBox buttons = new HBox(10);
-        buttons.setPadding(new Insets(10));
-        buttons.setAlignment(Pos.CENTER);
-        buttons.setSpacing(5);
-
         Button cancelButton = new Button("Cancelar");
         cancelButton.getStyleClass().add("cancel-button");
         cancelButton.setOnAction(event -> {
@@ -169,7 +161,8 @@ public class ManualRecordView
             }
         });
 
-        buttons.getChildren().addAll(cancelButton, acceptButton);
+        HBox buttons = new HBox(20, cancelButton, acceptButton);
+        buttons.getStyleClass().add("form-buttons");
 
         return buttons;
     }
