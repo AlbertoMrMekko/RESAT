@@ -48,7 +48,7 @@ public class ManualRecordView
     {
         BorderPane manualRecordLayout = new BorderPane();
         Label title = new Label("Registro manual");
-        title.setStyle("-fx-font-size: 34px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title-label");
         BorderPane.setMargin(title, new Insets(50, 0, 50, 0));
         BorderPane.setAlignment(title, Pos.CENTER);
 
@@ -89,8 +89,10 @@ public class ManualRecordView
         Label actionLabel = new Label("Acción: ");
         actionGroup = new ToggleGroup();
         RadioButton entryButton = new RadioButton("Entrar");
+        entryButton.getStyleClass().add("radio-button");
         entryButton.setToggleGroup(actionGroup);
         RadioButton exitButton = new RadioButton("Salir");
+        entryButton.getStyleClass().add("radio-button");
         exitButton.setToggleGroup(actionGroup);
 
         HBox timeBox = new HBox();
@@ -119,24 +121,16 @@ public class ManualRecordView
         buttons.setSpacing(5);
 
         Button cancelButton = new Button("Cancelar");
-        Button acceptButton = new Button("Aceptar");
-
-        HBox.setHgrow(acceptButton, Priority.ALWAYS);
-        buttons.getChildren().addAll(cancelButton, acceptButton);
-
+        cancelButton.getStyleClass().add("cancel-button");
         cancelButton.setOnAction(event -> {
             this.viewManager.clearDynamicContent();
             this.viewManager.showEmployeeActionsView();
         });
-        acceptButton.setOnAction(event -> {
-            // TODO pasos para registro manual:
-            //  1. obtener inputs
-            //  2. verificar inputs
-            //  3. confirmar
-            //  4. autenticar
-            //  5. registrar
-            //  6. mostrar acciones empleado
 
+        Button acceptButton = new Button("Aceptar");
+        HBox.setHgrow(acceptButton, Priority.ALWAYS);
+        acceptButton.getStyleClass().add("accept-button");
+        acceptButton.setOnAction(event -> {
             LocalDate date = dateField.getValue() != null ? LocalDate.parse(dateField.getValue().toString()) : null;
             String hour = hourComboBox.getValue() != null ? hourComboBox.getValue() : null;
             String minute = minuteComboBox.getValue() != null ? minuteComboBox.getValue() : null;
@@ -174,6 +168,8 @@ public class ManualRecordView
                 this.notificationService.showErrorAlert("Error en el registro manual", validationResult.errorMsg());
             }
         });
+
+        buttons.getChildren().addAll(cancelButton, acceptButton);
 
         return buttons;
     }

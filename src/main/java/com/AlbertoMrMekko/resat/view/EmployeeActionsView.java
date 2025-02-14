@@ -122,6 +122,7 @@ public class EmployeeActionsView
         StackPane deleteEmployeePane = new StackPane();
         deleteEmployeePane.setAlignment(Pos.TOP_RIGHT);
         Button deleteEmployeeButton = new Button("Eliminar empleado");
+        deleteEmployeeButton.getStyleClass().add("delete-employee-button");
         deleteEmployeeButton.setOnAction(event -> {
             boolean confirmation = this.viewManager.showDeleteEmployeeConfirmationView();
             if (confirmation)

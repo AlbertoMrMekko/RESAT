@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Component
 public class ConfirmationView
@@ -48,29 +49,37 @@ public class ConfirmationView
         confirmationStage.initModality(Modality.APPLICATION_MODAL);
 
         BorderPane rootNode = new BorderPane();
+        rootNode.getStyleClass().add("background");
 
         Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("emergent-window-title");
         Label textLabel = new Label(text);
+        textLabel.getStyleClass().add("emergent-window-text");
 
         Button cancel = new Button("Cancelar");
+        cancel.getStyleClass().add("cancel-button");
         cancel.setOnAction(event -> {
             confirmation = false;
             confirmationStage.close();
         });
 
         Button accept = new Button("Aceptar");
+        accept.getStyleClass().add("accept-button");
         accept.setOnAction(event -> {
             confirmation = true;
             confirmationStage.close();
         });
 
-        HBox buttons = new HBox();
-        buttons.getChildren().addAll(cancel, accept);
+        HBox buttons = new HBox(20, cancel, accept);
+        buttons.getStyleClass().add("buttons-box");
 
         rootNode.setTop(titleLabel);
         rootNode.setCenter(textLabel);
         rootNode.setBottom(buttons);
         Scene scene = new Scene(rootNode, 400, 300);
+
+        String css = Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm();
+        scene.getStylesheets().add(css);
 
         confirmationStage.setTitle("RESAT");
         confirmationStage.setScene(scene);

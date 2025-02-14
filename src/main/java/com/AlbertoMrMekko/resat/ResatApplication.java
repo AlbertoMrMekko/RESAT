@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Objects;
+
 @SpringBootApplication
 public class ResatApplication extends Application
 {
@@ -34,6 +36,12 @@ public class ResatApplication extends Application
 
         BorderPane root = applicationContext.getBean(BorderPane.class);
         Scene scene = new Scene(root, 1125, 750);
+
+        String css = Objects.requireNonNull(getClass().getResource("/style.css")).toExternalForm();
+        scene.getStylesheets().add(css);
+
+        root.getStyleClass().add("background");
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("RESAT");
         primaryStage.show();

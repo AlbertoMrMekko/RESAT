@@ -43,7 +43,7 @@ public class CreateEmployeeView
     {
         BorderPane formLayout = new BorderPane();
         Label title = new Label("Nuevo empleado");
-        title.setStyle("-fx-font-size: 34px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title-label");
         BorderPane.setMargin(title, new Insets(50, 0, 50, 0));
         BorderPane.setAlignment(title, Pos.CENTER);
 
@@ -109,12 +109,12 @@ public class CreateEmployeeView
         buttons.setSpacing(5);
 
         Button cancelButton = new Button("Cancelar");
-        Button createEmployeeButton = new Button("Crear empleado");
-
-        HBox.setHgrow(createEmployeeButton, Priority.ALWAYS);
-        buttons.getChildren().addAll(cancelButton, createEmployeeButton);
-
+        cancelButton.getStyleClass().add("cancel-button");
         cancelButton.setOnAction(event -> this.viewManager.clearDynamicContent());
+
+        Button createEmployeeButton = new Button("Crear empleado");
+        HBox.setHgrow(createEmployeeButton, Priority.ALWAYS);
+        createEmployeeButton.getStyleClass().add("accept-button");
         createEmployeeButton.setOnAction(event -> {
             String name = nameField.getText();
             String dni = dniField.getText();
@@ -146,6 +146,8 @@ public class CreateEmployeeView
             }
 
         });
+
+        buttons.getChildren().addAll(cancelButton, createEmployeeButton);
 
         return buttons;
     }

@@ -1,0 +1,68 @@
+.button {
+    -fx-background-color: #b2dbe9;
+    -fx-font-size: 20px;
+    -fx-font-family: Georgia;
+    -fx-text-alignment: center;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+}
+
+.button:hover {
+    -fx-background-color: #97c3d2;
+}
+
+.accept-button {
+    -fx-background-color: #9cd89e;
+}
+
+.accept-button:hover {
+    -fx-background-color: #86cc88;
+}
+
+.cancel-button {
+    -fx-background-color: #f07358;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #d96850;
+}
+
+.background {
+    -fx-background-color: #ecffff;
+}
+
+.label {
+    -fx-font-size: 15px;
+    -fx-font-family: Georgia;
+}
+
+.title-label {
+    -fx-font-size: 34px;
+    -fx-font-family: Georgia;
+    -fx-font-weight: bold;
+}
+
+.radio-button {
+    -fx-font-size: 15px;
+    -fx-font-family: Georgia;
+}
+
+.delete-employee-button {
+    -fx-font-size: 15px;
+}
+
+.emergent-window-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+}
+
+.emergent-window-text {
+    -fx-font-size: 16px;
+}
+
+.buttons-box {
+    -fx-alignment: center;
+    -fx-padding: 0px 50px 20px 50px;
+}
