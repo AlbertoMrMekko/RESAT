@@ -38,7 +38,7 @@ public class SidebarView
     public void show()
     {
         VBox sidebar = new VBox();
-        sidebar.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
+        sidebar.getStyleClass().add("sidebar-background");
 
         List<Employee> employees = this.employeeService.getEmployees();
         Employee selectedEmployee = this.selectedEmployeeManager.getSelectedEmployee();
@@ -47,7 +47,7 @@ public class SidebarView
             HBox row = createSidebarRow(employee);
             if (selectedEmployee != null && employee.getDni().equals(selectedEmployee.getDni()))
             {
-                row.setStyle("-fx-border-color: lightgray; -fx-border-width: 3px; -fx-background-color: lightgray;");
+                row.getStyleClass().add("sidebar-selected-row");
             }
             VBox.setVgrow(row, Priority.ALWAYS);
             sidebar.getChildren().add(row);
@@ -65,16 +65,14 @@ public class SidebarView
     private HBox createSidebarRow(Employee employee)
     {
         HBox row = new HBox();
-        row.setPadding(new Insets(5, 10, 5, 10));
-        row.setStyle("-fx-border-color: lightgray; -fx-border-width: 1px;");
-        row.setAlignment(Pos.CENTER);
+        row.getStyleClass().add("sidebar-row");
 
         Region colorIndicator = new Region();
         colorIndicator.setPrefSize(20, 20);
-        colorIndicator.setStyle("-fx-background-color: " + (employee.isOnline() ? "green" : "red") + ";");
+        colorIndicator.getStyleClass().add(employee.isOnline() ? "online-indicator" : "offline-indicator");
 
         Label nameLabel = new Label(employee.getName());
-        nameLabel.setStyle("-fx-font-size: 22px;");
+        nameLabel.getStyleClass().add("sidebar-name");
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
         nameLabel.setMaxWidth(Double.MAX_VALUE);
         nameLabel.setAlignment(Pos.CENTER);
@@ -93,7 +91,7 @@ public class SidebarView
     {
         HBox row = new HBox();
         row.setPadding(new Insets(5, 10, 5, 10));
-        row.setStyle("-fx-border-color: lightgray; -fx-border-width: 1px;");
+        row.getStyleClass().add("sidebar-row");
         row.setAlignment(Pos.CENTER);
 
         Button addButton = new Button("+");

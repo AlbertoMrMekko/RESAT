@@ -78,7 +78,6 @@
 
 .password-field {
     -fx-max-width: 250px;
-    -fx-alignment: center;
 }
 
 .alignment-center {
@@ -100,4 +99,46 @@
 .form-buttons {
     -fx-alignment: center;
     -fx-padding: 50px 50px 50px 50px;
+}
+
+.sidebar-background {
+    -fx-background-color: #c9fcf7;
+    -fx-border-width: 1px;
+    -fx-border-color: #abebe5;
+}
+
+.sidebar-row {
+    -fx-border-width: 1px;
+    -fx-border-color: #abebe5;
+    -fx-padding: 5px 10px 5px 10px;
+    -fx-alignment: center;
+}
+
+.sidebar-name {
+    -fx-font-size: 22px;
+}
+
+.online-indicator {
+    -fx-background-color: green;
+}
+
+.offline-indicator {
+    -fx-background-color: red;
+}
+
+.sidebar-selected-row {
+    -fx-background-color: #83dfd6;
+}
+
+.dialog-pane {
+    -fx-background-color: #ecffff;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #ecffff;
+}
+
+.dialog-pane .content {
+    -fx-background-color: #ecffff;
+    -fx-font-family: Arial;
 }
